@@ -12,6 +12,11 @@ public class NBody {
         return radius;
     }
 
+    /**
+     * Read all the information of planets from file
+     * @param filePath
+     * @return
+     */
     public static Planet[] readPlanets(String filePath) {
         In in = new In(filePath);
         int num = in.readInt();
@@ -27,5 +32,16 @@ public class NBody {
             planets[i] = new Planet(xxPos, yyPos, xxVel, yyVel, mass, planetName);
         }
         return planets;
+    }
+
+    public static void main(String[] args) {
+        double T = Double.parseDouble(args[0]);
+        double dt = Double.parseDouble(args[1]);
+        String fileName = args[2];
+        Planet[] planets = readPlanets(fileName);
+        double radius = readRadius(fileName);
+        for (Planet planet : planets) {
+            planet.draw();
+        }
     }
 }
