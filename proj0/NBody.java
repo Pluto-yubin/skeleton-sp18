@@ -1,3 +1,5 @@
+import examples.StdDraw;
+
 public class NBody {
     /**
      * Read the radius of university from the file
@@ -40,8 +42,30 @@ public class NBody {
         String fileName = args[2];
         Planet[] planets = readPlanets(fileName);
         double radius = readRadius(fileName);
-        for (Planet planet : planets) {
-            planet.draw();
+
+        StdDraw.enableDoubleBuffering();
+
+
+
+        for (double t = 0; t < T; t += dt) {
+            StdDraw.setScale(-radius, radius);
+            StdDraw.picture(0, 0, "images/starfield.jpg");
+            double[] xForces = new double[planets.length];
+            double[] yForces = new double[planets.length];
+            for (int i = 0; i < planets.length; i++) {
+                xForces[i] = planets[i].calcNetForceExertedByX(planets);
+                yForces[i] = planets[i].calcNetForceExertedByY(planets);
+            }
+            for (int i = 0; i < planets.length; i++) {
+                planets[i].update(dt, xForces[i], yForces[i]);
+            }
+            for (Planet planet : planets) {
+                planet.draw();
+            }
+            StdDraw.show();
+            StdDraw.pause(10);
+            StdDraw.clear();
         }
+
     }
 }

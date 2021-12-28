@@ -1,3 +1,5 @@
+import examples.StdDraw;
+
 public class Planet {
     // Its current position
     public double xxPos;
@@ -126,7 +128,6 @@ public class Planet {
      */
     public void draw() {
         StdDraw.picture(xxPos, yyPos, "images/" + imgFileName);
-
     }
 }
 

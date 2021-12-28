@@ -99,6 +99,6 @@ public class StdDrawDemo {
 		
 		drawThree();
 		drawRandom();
-//		drawZoom();
+		drawZoom();
 	}
 } 
