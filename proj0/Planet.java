@@ -56,8 +56,8 @@ public class Planet {
      * @return
      */
     public double calcForceExertedByX(Planet planet) {
-        double res =  calcForceExertedBy(planet) * (xxPos - planet.xxPos) / calcDistance(planet);
-        return res > 0 ? res : -res;
+        double res =  calcForceExertedBy(planet) * (planet.xxPos - xxPos) / calcDistance(planet);
+        return res;
     }
 
     /**
@@ -66,8 +66,8 @@ public class Planet {
      * @return
      */
     public double calcForceExertedByY(Planet planet) {
-        double res =  calcForceExertedBy(planet) * (yyPos - planet.yyPos) / calcDistance(planet);
-        return res > 0 ? res : -res;
+        double res =  calcForceExertedBy(planet) * (planet.yyPos - yyPos) / calcDistance(planet);
+        return res;
     }
 
     /**
@@ -81,13 +81,10 @@ public class Planet {
             if (planet.equals(this)) {
                 continue;
             }
-            if (planet.xxPos > xxPos) {
-                res -= calcForceExertedByX(planet);
-            } else {
-                res += calcForceExertedByX(planet);
-            }
+            res += calcForceExertedByX(planet);
+
         }
-        return res > 0 ? res : -res;
+        return res;
     }
 
     /**
@@ -101,13 +98,9 @@ public class Planet {
             if (planet.equals(this)) {
                 continue;
             }
-            if (planet.yyPos > yyPos) {
-                res -= calcForceExertedByY(planet);
-            } else {
-                res += calcForceExertedByY(planet);
-            }
+            res += calcForceExertedByY(planet);
         }
-        return res > 0 ? res : -res;
+        return res;
     }
 
     /**
