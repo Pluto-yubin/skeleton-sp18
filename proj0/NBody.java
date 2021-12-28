@@ -45,8 +45,6 @@ public class NBody {
 
         StdDraw.enableDoubleBuffering();
 
-
-
         for (double t = 0; t < T; t += dt) {
             StdDraw.setScale(-radius, radius);
             StdDraw.picture(0, 0, "images/starfield.jpg");
@@ -59,12 +57,19 @@ public class NBody {
             for (int i = 0; i < planets.length; i++) {
                 planets[i].update(dt, xForces[i], yForces[i]);
             }
+
+//            for (Planet planet : planets) {
+//                planet.draw();
+//            }
+//            StdDraw.show();
+//            StdDraw.pause(10);
+//            StdDraw.clear();
+            StdDraw.picture(0, 0, "images/starfield.jpg");
             for (Planet planet : planets) {
                 planet.draw();
             }
             StdDraw.show();
             StdDraw.pause(10);
-            StdDraw.clear();
         }
         StdOut.printf("%d\n", planets.length);
         StdOut.printf("%.2e\n", radius);
