@@ -87,7 +87,7 @@ public class LinkedListDeque<T> {
      * @return
      */
     public boolean isEmpty() {
-        return sentinel.next == null;
+        return size == 0;
     }
 
     /**
@@ -104,8 +104,9 @@ public class LinkedListDeque<T> {
     public void printDeque() {
         String res = "";
         Node temp = sentinel.next;
-        while (temp != null) {
+        while (!temp.equals(sentinel)) {
             res += temp.value + " ";
+            temp = temp.next;
         }
         System.out.println(res.substring(0, res.length() - 1));
     }
