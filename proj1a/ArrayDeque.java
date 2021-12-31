@@ -11,13 +11,13 @@ public class ArrayDeque<T> {
         capacity = item.length;
     }
 
-    public ArrayDeque(T elem) {
-        item = (T[]) new Object[8];
-        capacity = item.length;
-        item[nextFirst] = elem;
-        nextFirst = (nextFirst - 1 + item.length) % item.length;
-        size += 1;
-    }
+//    public ArrayDeque(T elem) {
+//        item = (T[]) new Object[8];
+//        capacity = item.length;
+//        item[nextFirst] = elem;
+//        nextFirst = (nextFirst - 1 + item.length) % item.length;
+//        size += 1;
+//    }
 
     public void addFirst(T elem) {
         if (size == capacity) {
@@ -48,7 +48,7 @@ public class ArrayDeque<T> {
         }
         item = temp;
         nextFirst = capacity - 1;
-        nextLast = size + 1;
+        nextLast = size;
     }
 
     /**
@@ -117,7 +117,7 @@ public class ArrayDeque<T> {
 
         item = temp;
         nextFirst = capacity - 1;
-        nextLast = size + 1;
+        nextLast = size;
     }
 
     public T get(int index) {
