@@ -155,6 +155,30 @@ public class ArrayDequeTest {
         passed = checkItem(3, lld1.removeFirst(), 0) && passed;
         passed = checkItem(5, lld1.removeLast(), lld1.size() - 1) && passed;
         passed = checkItem(4, lld1.removeLast(), lld1.size() - 1) && passed;
+
+        lld1 = new ArrayDeque<>();
+        lld1.addLast(0);
+        lld1.get(0);
+        lld1.removeFirst();
+        lld1.addLast(3);
+        lld1.get(0);
+        lld1.addFirst(5);
+        lld1.addLast(6);
+        lld1.removeLast();
+        lld1.removeLast();
+        lld1.addLast(11);
+        lld1.get(0);
+        lld1.removeFirst();
+        lld1.addFirst(14);
+        lld1.removeLast();
+        lld1.addFirst(16);
+        lld1.removeLast();
+        lld1.get(0);
+        lld1.get(0);
+        lld1.removeFirst();
+        lld1.addLast(21);
+        lld1.removeLast();
+        lld1.addFirst(23);
         printTestStatus(passed);
     }
 

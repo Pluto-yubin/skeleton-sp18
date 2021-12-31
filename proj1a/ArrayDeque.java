@@ -6,18 +6,7 @@ public class ArrayDeque<T> {
     private int nextLast = 1;
     private static double factory = 0.25;
 
-    public ArrayDeque() {
-        item = (T[]) new Object[8];
-        capacity = item.length;
-    }
-
-//    public ArrayDeque(T elem) {
-//        item = (T[]) new Object[8];
-//        capacity = item.length;
-//        item[nextFirst] = elem;
-//        nextFirst = (nextFirst - 1 + item.length) % item.length;
-//        size += 1;
-//    }
+    public ArrayDeque() { }
 
     public void addFirst(T elem) {
         if (size == capacity) {
@@ -29,7 +18,7 @@ public class ArrayDeque<T> {
     }
 
     public void addLast(T elem) {
-        if (size == item.length) {
+        if (size == capacity) {
             resize();
         }
         item[nextLast] = elem;
@@ -41,6 +30,14 @@ public class ArrayDeque<T> {
      * When the number of element out of the capacity of array, it needs to amplify the capacity
      */
     private void resize() {
+        // lazy loading
+        if (size == 0) {
+            item = (T[]) new Object[8];
+            capacity = item.length;
+            nextFirst = 0;
+            nextLast = 1;
+            return;
+        }
         capacity *= 2;
         T[] temp = (T[]) new Object[capacity];
         for (int i = 0; i < size; i++) {

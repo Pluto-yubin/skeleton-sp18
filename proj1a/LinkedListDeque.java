@@ -19,15 +19,6 @@ public class LinkedListDeque<T> {
         sentinel.next = sentinel;
         size = 0;
     }
-    public LinkedListDeque(T value) {
-        sentinel = new Node();
-        Node node = new Node(value);
-        sentinel.next = node;
-        sentinel.prev = node;
-        node.prev = sentinel;
-        node.next = sentinel;
-        size = 0;
-    }
 
     /**
      * get the index value by recursion
@@ -36,6 +27,9 @@ public class LinkedListDeque<T> {
      * @throws Exception
      */
     public T getRecursive(int index) {
+        if (index == 0) {
+            return sentinel.next.value;
+        }
         Node first = sentinel.next;
         return helpRecursive(first, index - 1);
     }
