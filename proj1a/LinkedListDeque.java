@@ -6,11 +6,11 @@ public class LinkedListDeque<T> {
         Node prev;
         Node next;
 
-        public Node(T value) {
+        Node(T value) {
             this.value = value;
         }
 
-        public Node() {}
+        Node() { }
     }
 
     public LinkedListDeque() {
@@ -35,9 +35,9 @@ public class LinkedListDeque<T> {
      * @return
      * @throws Exception
      */
-    public T getRecursive(int index) throws Exception {
+    public T getRecursive(int index){
         Node first = sentinel.next;
-        return helpRecursive(first, index-1);
+        return helpRecursive(first, index - 1);
     }
 
     /**
@@ -47,13 +47,12 @@ public class LinkedListDeque<T> {
      * @return
      * @throws Exception
      */
-    private T helpRecursive(Node node, int index) throws Exception {
-        if (node == null)
-            throw new Exception("index out of range");
-        if (index == 0)
+    private T helpRecursive(Node node, int index){
+        if (index == 0) {
             return node.value;
-        else
-            return helpRecursive(node.next, index-1);
+        } else {
+            return helpRecursive(node.next, index - 1);
+        }
     }
 
     /**
@@ -132,8 +131,9 @@ public class LinkedListDeque<T> {
      * @return
      */
     public T removeLast() {
-        if (size == 0)
+        if (size == 0) {
             return null;
+        }
         Node node = sentinel.prev;
         node.prev.next = sentinel;
         sentinel.prev = node.prev;

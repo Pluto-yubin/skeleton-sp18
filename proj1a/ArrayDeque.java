@@ -4,7 +4,7 @@ public class ArrayDeque<T> {
     private int capacity = 0;
     private int nextFirst = 0;
     private int nextLast = 1;
-    private static double Factory = 0.25;
+    private static double factory = 0.25;
 
     public ArrayDeque() {
         item = (T[]) new Object[8];
@@ -76,28 +76,30 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst() {
-        if (size == 0)
+        if (size == 0) {
             return null;
+        }
         int index = (nextFirst + 1) % item.length;
         T elem = item[index];
         item[index] = null;
         nextFirst = index;
         size -= 1;
-        if (size <= capacity * Factory) {
+        if (size <= capacity * factory) {
             downsize();
         }
         return elem;
     }
 
     public T removeLast() {
-        if (size == 0)
+        if (size == 0) {
             return null;
+        }
         int index = (nextLast - 1 + item.length) % item.length;
         T elem = item[index];
         item[index] = null;
         nextLast = index;
         size -= 1;
-        if (size <= capacity * Factory) {
+        if (size <= capacity * factory) {
             downsize();
         }
         return elem;
@@ -119,8 +121,9 @@ public class ArrayDeque<T> {
     }
 
     public T get(int index) {
-        if (index < 0 || index >= item.length)
+        if (index < 0 || index >= item.length) {
             return null;
+        }
         // the relative length from first
         return item[(nextFirst + index + 1) % item.length];
     }

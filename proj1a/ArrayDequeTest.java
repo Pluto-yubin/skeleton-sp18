@@ -20,7 +20,8 @@ public class ArrayDequeTest {
     /* Utility method for printing out empty checks. */
     public static boolean checkItem(int expected, int actual, int index) {
         if (expected != actual) {
-            System.out.println("get() returned " + actual + " in index: " + index + ", but expected: " + expected);
+            System.out.println("get() returned " + actual + " in index: " +
+                    index + ", but expected: " + expected);
             return false;
         }
         return true;
@@ -42,7 +43,6 @@ public class ArrayDequeTest {
      * && is the "and" operation. */
     public static void addIsEmptySizeTest() {
         System.out.println("Running add/isEmpty/Size test.");
-        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
         ArrayDeque<String> lld1 = new ArrayDeque<String>();
 
@@ -86,8 +86,6 @@ public class ArrayDequeTest {
     public static void addRemoveTest() {
 
         System.out.println("Running add/remove test.");
-
-        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
         // should be empty

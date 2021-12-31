@@ -1,6 +1,5 @@
 /** Performs some basic linked list tests. */
 public class LinkedListDequeTest {
-	
 	/* Utility method for printing out empty checks. */
 	public static boolean checkEmpty(boolean expected, boolean actual) {
 		if (expected != actual) {
@@ -10,6 +9,15 @@ public class LinkedListDequeTest {
 		return true;
 	}
 
+	/* Utility method for printing out empty checks. */
+	public static boolean checkItem(int expected, int actual, int index) {
+		if (expected != actual) {
+			System.out.println("get() returned " + actual + " in index: "
+					+ index + ", but expected: " + expected);
+			return false;
+		}
+		return true;
+	}
 	/* Utility method for printing out empty checks. */
 	public static boolean checkSize(int expected, int actual) {
 		if (expected != actual) {
@@ -35,7 +43,6 @@ public class LinkedListDequeTest {
 	  * && is the "and" operation. */
 	public static void addIsEmptySizeTest() {
 		System.out.println("Running add/isEmpty/Size test.");
-		System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
 		LinkedListDeque<String> lld1 = new LinkedListDeque<String>();
 
@@ -66,8 +73,6 @@ public class LinkedListDequeTest {
 
 		System.out.println("Running add/remove test.");
 
-		System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
-
 		LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
 		// should be empty 
 		boolean passed = checkEmpty(true, lld1.isEmpty());
@@ -84,9 +89,57 @@ public class LinkedListDequeTest {
 
 	}
 
+	/** Add some items and check that all the item are in order. */
+	public static void getTest() {
+		System.out.println("Running get test.");
+
+		LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+		// should be empty
+		boolean passed = checkEmpty(true, lld1.isEmpty());
+
+		lld1.addFirst(10);
+		// should be 10
+		passed = checkItem(10, lld1.get(0), 0) && passed;
+
+		lld1.addFirst(20);
+		// should be 20
+		passed = checkItem(20, lld1.get(0), 0) && passed;
+
+		lld1.addFirst(30);
+		lld1.addFirst(40);
+		lld1.addFirst(50);
+		lld1.addFirst(60);
+		lld1.addFirst(70);
+		passed = checkItem(70, lld1.get(0), 0) && passed;
+		passed = checkItem(60, lld1.get(1), 1) && passed;
+		lld1.addFirst(80);
+		passed = checkItem(80, lld1.get(0), 0) && passed;
+		lld1.addFirst(90);
+		passed = checkItem(90, lld1.get(0), 0) && passed;
+		passed = checkItem(80, lld1.get(1), 1) && passed;
+		passed = checkItem(10, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+
+		lld1.removeFirst();
+		passed = checkItem(80, lld1.get(0), 0) && passed;
+		passed = checkItem(60, lld1.get(2), 2) && passed;
+		lld1.removeFirst();
+		passed = checkItem(70, lld1.get(0), 0) && passed;
+		passed = checkItem(10, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+		lld1.removeLast();
+		passed = checkItem(20, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+		lld1.removeFirst();
+		lld1.removeLast();
+		passed = checkItem(30, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+		passed = checkItem(60, lld1.get(0), 0) && passed;
+		printTestStatus(passed);
+	}
+
 	public static void main(String[] args) {
 		System.out.println("Running tests.\n");
 		addIsEmptySizeTest();
 		addRemoveTest();
+		getTest();
+
 	}
+
 } 
