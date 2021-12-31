@@ -43,12 +43,12 @@ public class ArrayDeque<T> {
     private void resize() {
         capacity *= 2;
         T[] temp = (T[]) new Object[capacity];
-        for (int i = 0; i < item.length; i++) {
-            temp[i] = item[(nextLast + i) % item.length];
+        for (int i = 0; i < size; i++) {
+            temp[i] = item[(nextFirst + 1 + i) % item.length];
         }
         item = temp;
         nextFirst = capacity - 1;
-        nextLast = capacity / 2 + 1;
+        nextLast = size + 1;
     }
 
     /**
@@ -83,7 +83,7 @@ public class ArrayDeque<T> {
         item[index] = null;
         nextFirst = index;
         size -= 1;
-        if (size < capacity * Factory) {
+        if (size <= capacity * Factory) {
             downsize();
         }
         return elem;
@@ -97,7 +97,7 @@ public class ArrayDeque<T> {
         item[index] = null;
         nextLast = index;
         size -= 1;
-        if (size < capacity * Factory) {
+        if (size <= capacity * Factory) {
             downsize();
         }
         return elem;
@@ -107,9 +107,15 @@ public class ArrayDeque<T> {
      * Downsize the item if elements less than capacity * Factory
      */
     private void downsize() {
+        capacity /= 2;
         T[] temp = (T[]) new Object[capacity];
-        System.arraycopy(item, 0, temp, 0, size);
+        for (int i = 0; i < size; i++) {
+            temp[i] = item[(i + nextFirst + 1) % item.length];
+        }
+
         item = temp;
+        nextFirst = capacity - 1;
+        nextLast = size + 1;
     }
 
     public T get(int index) {

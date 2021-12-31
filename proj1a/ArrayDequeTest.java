@@ -135,6 +135,18 @@ public class ArrayDequeTest {
         passed = checkItem(80, lld1.get(1), 1) && passed;
         passed = checkItem(10, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
 
+        lld1.removeFirst();
+        passed = checkItem(80, lld1.get(0), 0) && passed;
+        passed = checkItem(60, lld1.get(2), 2) && passed;
+        lld1.removeFirst();
+        passed = checkItem(70, lld1.get(0), 0) && passed;
+        passed = checkItem(10, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+        lld1.removeLast();
+        passed = checkItem(20, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+        lld1.removeFirst();
+        lld1.removeLast();
+        passed = checkItem(30, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+        passed = checkItem(60, lld1.get(0), 0) && passed;
         printTestStatus(passed);
     }
 
