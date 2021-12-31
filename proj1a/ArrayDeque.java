@@ -1,47 +1,54 @@
 public class ArrayDeque<T> {
-    T[] item;
-    int size = 0;
-    int nextFirst = 0;
-    int nextLast = 1;
+    private T[] item;
+    private int size = 0;
+    private int capacity = 0;
+    private int nextFirst = 0;
+    private int nextLast = 1;
     private static double Factory = 0.25;
 
     public ArrayDeque() {
         item = (T[]) new Object[8];
+        capacity = item.length;
     }
 
     public ArrayDeque(T elem) {
         item = (T[]) new Object[8];
+        capacity = item.length;
         item[nextFirst] = elem;
         nextFirst = (nextFirst - 1 + item.length) % item.length;
         size += 1;
     }
 
     public void addFirst(T elem) {
-        if (size == item.length) {
-            resize(size * 2);
+        if (size == capacity) {
+            resize();
         }
         item[nextFirst] = elem;
-        nextFirst = (nextFirst - 1 + item.length) % item.length;
+        nextFirst = (nextFirst - 1 + capacity) % capacity;
         size += 1;
     }
 
     public void addLast(T elem) {
         if (size == item.length) {
-            resize(size * 2);
+            resize();
         }
         item[nextLast] = elem;
-        nextLast = (nextLast + 1) % item.length;
+        nextLast = (nextLast + 1) % capacity;
         size += 1;
     }
 
     /**
      * When the number of element out of the capacity of array, it needs to amplify the capacity
-     * @param capacity
      */
-    private void resize(int capacity) {
+    private void resize() {
+        capacity *= 2;
         T[] temp = (T[]) new Object[capacity];
-        System.arraycopy(item, 0, temp, 0, size);
+        for (int i = 0; i < item.length; i++) {
+            temp[i] = item[(nextLast + i) % item.length];
+        }
         item = temp;
+        nextFirst = capacity - 1;
+        nextLast = capacity / 2 + 1;
     }
 
     /**
@@ -76,8 +83,8 @@ public class ArrayDeque<T> {
         item[index] = null;
         nextFirst = index;
         size -= 1;
-        if (size < item.length * Factory) {
-            downsize(item.length / 2);
+        if (size < capacity * Factory) {
+            downsize();
         }
         return elem;
     }
@@ -90,17 +97,16 @@ public class ArrayDeque<T> {
         item[index] = null;
         nextLast = index;
         size -= 1;
-        if (size < item.length * Factory) {
-            downsize(item.length / 2);
+        if (size < capacity * Factory) {
+            downsize();
         }
         return elem;
     }
 
     /**
      * Downsize the item if elements less than capacity * Factory
-     * @param capacity
      */
-    private void downsize(int capacity) {
+    private void downsize() {
         T[] temp = (T[]) new Object[capacity];
         System.arraycopy(item, 0, temp, 0, size);
         item = temp;
@@ -109,6 +115,7 @@ public class ArrayDeque<T> {
     public T get(int index) {
         if (index < 0 || index >= item.length)
             return null;
-        return item[index];
+        // the relative length from first
+        return item[(nextFirst + index + 1) % item.length];
     }
 }

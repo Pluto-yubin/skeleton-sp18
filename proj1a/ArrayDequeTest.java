@@ -17,6 +17,15 @@ public class ArrayDequeTest {
         return true;
     }
 
+    /* Utility method for printing out empty checks. */
+    public static boolean checkItem(int expected, int actual, int index) {
+        if (expected != actual) {
+            System.out.println("get() returned " + actual + " in index: " + index + ", but expected: " + expected);
+            return false;
+        }
+        return true;
+    }
+
     /* Prints a nice message based on whether a test passed.
      * The \n means newline. */
     public static void printTestStatus(boolean passed) {
@@ -41,8 +50,6 @@ public class ArrayDequeTest {
 
         lld1.addFirst("front");
 
-        // The && operator is the same as "and" in Python.
-        // It's a binary operator that returns true if both arguments true, and false otherwise.
         passed = checkSize(1, lld1.size()) && passed;
         passed = checkEmpty(false, lld1.isEmpty()) && passed;
 
@@ -54,6 +61,22 @@ public class ArrayDequeTest {
 
         System.out.println("Printing out deque: ");
         lld1.printDeque();
+
+        lld1.addLast("back");
+        lld1.addLast("back");
+        lld1.addLast("back");
+        lld1.addLast("back");
+        lld1.addLast("back");
+        lld1.addLast("back");
+        passed = checkSize(9, lld1.size()) && passed;
+
+        lld1.removeFirst();
+        lld1.removeFirst();
+        lld1.removeFirst();
+        lld1.removeFirst();
+        lld1.removeFirst();
+        lld1.removeFirst();
+        passed = checkSize(3, lld1.size()) && passed;
 
         printTestStatus(passed);
 
@@ -82,9 +105,43 @@ public class ArrayDequeTest {
 
     }
 
+    /** Add some items and check that all the item are in order. */
+    public static void getTest() {
+        System.out.println("Running get test.");
+
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        // should be empty
+        boolean passed = checkEmpty(true, lld1.isEmpty());
+
+        lld1.addFirst(10);
+        // should be 10
+        passed = checkItem(10, lld1.get(0), 0) && passed;
+
+        lld1.addFirst(20);
+        // should be 20
+        passed = checkItem(20, lld1.get(0), 0) && passed;
+
+        lld1.addFirst(30);
+        lld1.addFirst(40);
+        lld1.addFirst(50);
+        lld1.addFirst(60);
+        lld1.addFirst(70);
+        passed = checkItem(70, lld1.get(0), 0) && passed;
+        passed = checkItem(60, lld1.get(1), 1) && passed;
+        lld1.addFirst(80);
+        passed = checkItem(80, lld1.get(0), 0) && passed;
+        lld1.addFirst(90);
+        passed = checkItem(90, lld1.get(0), 0) && passed;
+        passed = checkItem(80, lld1.get(1), 1) && passed;
+        passed = checkItem(10, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
+
+        printTestStatus(passed);
+    }
+
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
         addIsEmptySizeTest();
         addRemoveTest();
+        getTest();
     }
 }
