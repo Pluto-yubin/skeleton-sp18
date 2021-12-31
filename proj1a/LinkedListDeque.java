@@ -31,7 +31,7 @@ public class LinkedListDeque<T> {
             return sentinel.next.value;
         }
         Node first = sentinel.next;
-        return helpRecursive(first, index - 1);
+        return helpRecursive(first, index);
     }
 
     /**

@@ -132,6 +132,28 @@ public class LinkedListDequeTest {
 		lld1.removeLast();
 		passed = checkItem(30, lld1.get(lld1.size() - 1), lld1.size() - 1) && passed;
 		passed = checkItem(60, lld1.get(0), 0) && passed;
+
+		lld1 = new LinkedListDeque<>();
+		lld1.addFirst(1);
+		lld1.addFirst(3);
+		lld1.addLast(4);
+		lld1.addLast(5);
+		passed = checkItem(3, lld1.removeFirst(), 0) && passed;
+		passed = checkItem(5, lld1.removeLast(), lld1.size() - 1) && passed;
+		passed = checkItem(4, lld1.removeLast(), lld1.size() - 1) && passed;
+
+		lld1 = new LinkedListDeque<>();
+		lld1.addLast(0);
+		lld1.removeFirst();
+		lld1.addLast(4);
+		lld1.addLast(5);
+		lld1.removeFirst();
+		lld1.getRecursive(0);
+		lld1.addFirst(10);
+		lld1.addFirst(11);
+		lld1.removeLast();
+		passed = checkItem(10, lld1.getRecursive(1), 1) && passed;
+		printTestStatus(passed);
 		printTestStatus(passed);
 	}
 
