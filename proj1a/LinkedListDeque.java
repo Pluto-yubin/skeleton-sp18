@@ -35,7 +35,7 @@ public class LinkedListDeque<T> {
      * @return
      * @throws Exception
      */
-    public T getRecursive(int index){
+    public T getRecursive(int index) {
         Node first = sentinel.next;
         return helpRecursive(first, index - 1);
     }
@@ -47,7 +47,7 @@ public class LinkedListDeque<T> {
      * @return
      * @throws Exception
      */
-    private T helpRecursive(Node node, int index){
+    private T helpRecursive(Node node, int index) {
         if (index == 0) {
             return node.value;
         } else {
@@ -115,8 +115,9 @@ public class LinkedListDeque<T> {
      * @return
      */
     public T removeFirst() {
-        if (size == 0)
+        if (size == 0) {
             return null;
+        }
         Node node = sentinel.next;
         sentinel.next = node.next;
         node.next.prev = sentinel;

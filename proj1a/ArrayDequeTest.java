@@ -20,7 +20,8 @@ public class ArrayDequeTest {
     /* Utility method for printing out empty checks. */
     public static boolean checkItem(int expected, int actual, int index) {
         if (expected != actual) {
-            System.out.println("get() returned " + actual + " in index: " +
+            System.out.println("get() returned " + actual + " in index: "
+                    +
                     index + ", but expected: " + expected);
             return false;
         }
