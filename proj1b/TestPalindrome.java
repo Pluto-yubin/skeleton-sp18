@@ -22,5 +22,9 @@ public class TestPalindrome {
         assertTrue(palindrome.isPalindrome(word));
         word = "hello";
         assertFalse(palindrome.isPalindrome(word));
+        assertTrue(palindrome.isPalindrome("aba"));
+        CharacterComparator cc1 = new OffByOne();
+        assertFalse(palindrome.isPalindrome("aba", cc1));
+
     }
 }

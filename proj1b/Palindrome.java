@@ -26,7 +26,7 @@ public class Palindrome {
     public boolean isPalindrome(String word, CharacterComparator cc) {
         int l = 0, h = word.length() - 1;
         while (l < h) {
-            if (cc.equalChars(word.charAt(l), word.charAt(h))) {
+            if (!cc.equalChars(word.charAt(l), word.charAt(h))) {
                 return false;
             }
             l += 1;
