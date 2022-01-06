@@ -10,9 +10,9 @@ import java.util.Random;
  * Draws a world consisting of hexagonal regions.
  */
 public class HexWorld {
-    private static final int WIDTH = 50;
-    private static final int HEIGHT = 50;
-    private static final int SIDE_LENGTH = 3;
+    private static final int WIDTH = 100;
+    private static final int HEIGHT = 100;
+    private static final int SIDE_LENGTH = 5;
 
     private static final long SEED = 2873123;
     private static final Random RANDOM = new Random(SEED);
@@ -34,8 +34,8 @@ public class HexWorld {
         }
         getUpperTriangle(tiles, s, x, y, tile);
         getLowerTriangle(tiles, s, x, y + 1, tile);
-        drawHexagonUpper(tiles, s, x - 5, y - 3, randomTile());
-        drawHexagonUpper(tiles, s, x + 5, y - 3, randomTile());
+        drawHexagonUpper(tiles, s, x - SIDE_LENGTH * 2 + 1, y - SIDE_LENGTH, randomTile());
+        drawHexagonUpper(tiles, s, x + SIDE_LENGTH * 2 - 1, y - SIDE_LENGTH, randomTile());
     }
 
     private static void drawHexagonLower(TETile[][] tiles, int s, int x, int y, TETile tile) {
@@ -45,17 +45,13 @@ public class HexWorld {
         }
         getUpperTriangle(tiles, s, x, y, tile);
         getLowerTriangle(tiles, s, x, y + 1, tile);
-        drawHexagonLower(tiles, s, x - 5, y + 3, randomTile());
-        drawHexagonLower(tiles, s, x + 5, y + 3, randomTile());
+        drawHexagonLower(tiles, s, x - SIDE_LENGTH * 2 + 1, y + SIDE_LENGTH, randomTile());
+        drawHexagonLower(tiles, s, x + SIDE_LENGTH * 2 - 1, y + SIDE_LENGTH, randomTile());
     }
 
     private static int getStartX(int s) {
         int size = s + (s - 1) * 2;
         return WIDTH / 2 - size / 2;
-    }
-
-    private static int getStartY(int s) {
-        return HEIGHT / 2 - 1;
     }
 
     private static TETile randomTile() {
