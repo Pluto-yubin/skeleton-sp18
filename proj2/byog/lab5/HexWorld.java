@@ -6,13 +6,14 @@ import byog.TileEngine.Tileset;
 
 import java.util.Random;
 
+
 /**
  * Draws a world consisting of hexagonal regions.
  */
 public class HexWorld {
-    private static final int WIDTH = 100;
-    private static final int HEIGHT = 100;
-    private static final int SIDE_LENGTH = 5;
+    private static final int WIDTH = 30;
+    private static final int HEIGHT = 30;
+    private static final int SIDE_LENGTH = 3;
 
     private static final long SEED = 2873123;
     private static final Random RANDOM = new Random(SEED);
@@ -66,8 +67,8 @@ public class HexWorld {
             case 6: return Tileset.PLAYER;
             case 7: return Tileset.GRASS;
             case 8: return Tileset.FLOOR;
+            default: return Tileset.NOTHING;
         }
-        return Tileset.NOTHING;
     }
 
     private static void getUpperTriangle(TETile[][] tiles, int s, int x, int y, TETile tile) {
@@ -97,7 +98,6 @@ public class HexWorld {
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
-
         TETile[][] hexTiles = new TETile[WIDTH][HEIGHT];
         addHexagon(hexTiles, SIDE_LENGTH);
         ter.renderFrame(hexTiles);
