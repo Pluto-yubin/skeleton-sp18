@@ -1,6 +1,4 @@
 package byog.lab5;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
@@ -14,6 +12,10 @@ import java.util.Random;
 public class HexWorld {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
+    private static final int SIDE_LENGTH = 3;
+
+    private static final long SEED = 2873123;
+    private static final Random RANDOM = new Random(SEED);
 
     public static void addHexagon(TETile[][] tiles, int s) {
         for (int i = 0; i < WIDTH; i++) {
@@ -21,10 +23,32 @@ public class HexWorld {
                 tiles[i][j] = Tileset.NOTHING;
             }
         }
-        int size = s + (s - 1) * 2;
-        getUpperTriangle(tiles, s);
-        getLowerTriangle(tiles, s);
+        drawHexagonUpper(tiles, s, getStartX(s),  HEIGHT - SIDE_LENGTH - 1, randomTile());
+        drawHexagonLower(tiles, s, getStartX(s), SIDE_LENGTH, randomTile());
     }
+
+    private static void drawHexagonUpper(TETile[][] tiles, int s, int x, int y, TETile tile) {
+        int size = s + (s - 1) * 2;
+        if (x + size >= WIDTH || y <= HEIGHT / 2 - SIDE_LENGTH || y - s + 1 < 0 || x < 0) {
+            return;
+        }
+        getUpperTriangle(tiles, s, x, y, tile);
+        getLowerTriangle(tiles, s, x, y + 1, tile);
+        drawHexagonUpper(tiles, s, x - 5, y - 3, randomTile());
+        drawHexagonUpper(tiles, s, x + 5, y - 3, randomTile());
+    }
+
+    private static void drawHexagonLower(TETile[][] tiles, int s, int x, int y, TETile tile) {
+        int size = s + (s - 1) * 2;
+        if (x + size >= WIDTH || y >= HEIGHT / 2 || y - s + 1 < 0 || x < 0) {
+            return;
+        }
+        getUpperTriangle(tiles, s, x, y, tile);
+        getLowerTriangle(tiles, s, x, y + 1, tile);
+        drawHexagonLower(tiles, s, x - 5, y + 3, randomTile());
+        drawHexagonLower(tiles, s, x + 5, y + 3, randomTile());
+    }
+
     private static int getStartX(int s) {
         int size = s + (s - 1) * 2;
         return WIDTH / 2 - size / 2;
@@ -34,13 +58,27 @@ public class HexWorld {
         return HEIGHT / 2 - 1;
     }
 
-    private static void getUpperTriangle(TETile[][] tiles, int s) {
-        int x = getStartX(s);
-        int y = getStartY(s);
+    private static TETile randomTile() {
+        int tileNum = RANDOM.nextInt(9);
+        switch (tileNum) {
+            case 0: return Tileset.WALL;
+            case 1: return Tileset.FLOWER;
+            case 2: return Tileset.LOCKED_DOOR;
+            case 3: return Tileset.MOUNTAIN;
+            case 4: return Tileset.WATER;
+            case 5: return Tileset.SAND;
+            case 6: return Tileset.PLAYER;
+            case 7: return Tileset.GRASS;
+            case 8: return Tileset.FLOOR;
+        }
+        return Tileset.NOTHING;
+    }
+
+    private static void getUpperTriangle(TETile[][] tiles, int s, int x, int y, TETile tile) {
         int size = s + (s - 1) * 2;
         while (size >= s) {
             for (int i = x; i < x + size; i++) {
-                tiles[i][y] = Tileset.FLOWER;
+                tiles[i][y] = tile;
             }
             size -= 2;
             y -= 1;
@@ -48,13 +86,11 @@ public class HexWorld {
         }
     }
 
-    private static void getLowerTriangle(TETile[][] tiles, int s) {
-        int x = getStartX(s);
-        int y = getStartY(s) + 1;
+    private static void getLowerTriangle(TETile[][] tiles, int s, int x, int y, TETile tile) {
         int size = s + (s - 1) * 2;
         while (size >= s) {
             for (int i = x; i < x + size; i++) {
-                tiles[i][y] = Tileset.FLOWER;
+                tiles[i][y] = tile;
             }
             size -= 2;
             y += 1;
@@ -67,7 +103,7 @@ public class HexWorld {
         ter.initialize(WIDTH, HEIGHT);
 
         TETile[][] hexTiles = new TETile[WIDTH][HEIGHT];
-        addHexagon(hexTiles, 3);
+        addHexagon(hexTiles, SIDE_LENGTH);
         ter.renderFrame(hexTiles);
     }
 }
