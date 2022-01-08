@@ -1,8 +1,5 @@
 package synthesizer;
 
-import edu.princeton.cs.introcs.StdAudio;
-import synthesizer.BoundedQueue;
-
 //Make sure this class is public
 public class GuitarString {
     /** Constants. Do not change. In case you're curious, the keyword final means
@@ -47,10 +44,4 @@ public class GuitarString {
         return buffer.peek();
     }
 
-    @Override
-    public String toString() {
-        return "GuitarString{" +
-                "buffer=" + buffer +
-                '}';
-    }
 }
