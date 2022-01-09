@@ -2,6 +2,9 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import byog.TileEngine.Tileset;
+
+import java.util.Random;
 
 public class Game {
     TERenderer ter = new TERenderer();
@@ -9,6 +12,7 @@ public class Game {
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
 
+//    private static Random RANDOM;
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
@@ -31,8 +35,36 @@ public class Game {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
+        TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
+        MapGenerator mapGenerator = new MapGenerator();
+        int inputIndex = 0;
+        while (inputIndex < input.length()) {
+            char instruction = input.charAt(inputIndex);
+            if (instruction == 'n') {
+//                initWorld(finalWorldFrame);
+//                inputIndex = generateRandom(input);
+                mapGenerator.finalWorldFrame = finalWorldFrame;
+                mapGenerator.seed = 1234;
+            } else if (instruction == 'l') {
+                // TODO: Load the world saved in last game
+            } else if (instruction == ':') {
+                inputIndex += 1;
+                if (input.charAt(inputIndex) == 'q') {
+                    // TODO: Save the game
+                } else {
+                    // I don't know, maybe throw an error?
+                }
+            } else {
+                //phase 2
+            }
+            inputIndex += 1;
+        }
 
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+
+        return mapGenerator.generateMap();
+    }
+
+    private void generateRealWorld(TETile[][] finalWorldFrame) {
+
     }
 }

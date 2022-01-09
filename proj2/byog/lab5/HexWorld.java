@@ -56,7 +56,7 @@ public class HexWorld {
     }
 
     private static TETile randomTile() {
-        int tileNum = RANDOM.nextInt(9);
+        int tileNum = RANDOM.nextInt(10);
         switch (tileNum) {
             case 0: return Tileset.WALL;
             case 1: return Tileset.FLOWER;
@@ -67,6 +67,7 @@ public class HexWorld {
             case 6: return Tileset.PLAYER;
             case 7: return Tileset.GRASS;
             case 8: return Tileset.FLOOR;
+            case 9: return Tileset.TREE;
             default: return Tileset.NOTHING;
         }
     }
@@ -100,6 +101,7 @@ public class HexWorld {
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] hexTiles = new TETile[WIDTH][HEIGHT];
         addHexagon(hexTiles, SIDE_LENGTH);
+        hexTiles[0][0] = Tileset.FLOWER;
         ter.renderFrame(hexTiles);
     }
 }
