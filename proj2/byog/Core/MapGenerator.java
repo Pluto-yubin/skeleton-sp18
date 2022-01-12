@@ -13,7 +13,7 @@ import java.util.Random;
 public class MapGenerator {
     TETile[][] finalWorldFrame;
     int seed;
-    private static Random RANDOM;
+    private Random RANDOM;
     // Define the picture of the wall
     private static final TETile WALL = Tileset.WALL;
     // Define the picture of the floor
@@ -37,10 +37,36 @@ public class MapGenerator {
             return null;
         }
         // Initiate map
-        Arrays.fill(finalWorldFrame, Tileset.NOTHING);
+        for (int i = 0; i < finalWorldFrame.length; i++) {
+            for (int j = 0; j < finalWorldFrame[0].length; j++) {
+                finalWorldFrame[i][j] = Tileset.NOTHING;
+            }
+        }
 
-
+        int roomLength = RandomUtils.uniform(RANDOM, 1, 5);
+        int roomHeight = RandomUtils.uniform(RANDOM, 1, 5);
+        Room room = new Room(
+                new Position(0, 0),
+                new Position(0, roomLength),
+                new Position(roomLength, roomHeight),
+                new Position(roomLength, 0)
+        );
+        generateMapRecur(finalWorldFrame, room);
         return finalWorldFrame;
+    }
+
+    private void generateMapRecur(TETile[][] world, Room room) {
+        if (Room.overlap(room)) {
+            return;
+        }
+        drawRoom(finalWorldFrame, room);
+        int roomLength = room.rightDown.x - room.leftDown.x;
+        int roomHeigth = room.rightUp.y - room.rightDown.y;
+        double hallWayDire = RandomUtils.uniform(RANDOM);
+        if (hallWayDire < 0.25) {
+            Position hallway = new Position(RandomUtils.uniform(RANDOM, 0, roomLength - 1), roomHeigth);
+
+        }
     }
 
     /**
@@ -111,18 +137,38 @@ public class MapGenerator {
         if (dir == Direction.LEFT || dir == Direction.RIGHT) {
             distance = Math.abs(start.x - end.x);
             for (int i = 0; i <= distance; i++) {
-                world[start.x + i * direction][start.y] = FLOOR;
+                TETile tile = world[start.x + i * direction][start.y];
+                if (tile.equals(Tileset.NOTHING)) {
+                    world[start.x + i * direction][start.y] = Tileset.FLOOR;
+                }
             }
 
         } else {
             distance = Math.abs(start.y - end.y);
             for (int i = 0; i <= distance; i++) {
-                world[start.x][start.y + i * direction] = FLOOR;
+                TETile tile = world[start.x + i * direction][start.y];
+                if (tile.equals(Tileset.NOTHING)) {
+                    world[start.x + i * direction][start.y] = Tileset.FLOOR;
+                }
             }
         }
         return new Position(start.x + (distance - 1) * direction, start.y);
     }
 
+    /**
+     * Drwa the hallway like belows
+     *      ####
+     *      ...#
+     *      ##.#
+     *       #.#
+     *       #.#
+     * @param world
+     * @param start
+     * @param horizon
+     * @param vertical
+     * @param horDis
+     * @param velDis
+     */
     public void drawLHall(TETile[][] world, Position start, Direction horizon, Direction vertical, int horDis, int velDis) {
         int horizonDir = 1;
         int verticalDir = 1;
@@ -132,17 +178,21 @@ public class MapGenerator {
         if (vertical == Direction.DOWN) {
             verticalDir = -1;
         }
+
+        //Draw the horizon hallway
         Position floorStart = new Position(start.x, start.y + verticalDir);
-        Position end = drawHorizonHallway(world, start, horizon, horDis);
-        Position floorEnd = new Position(end.x, floorStart.y);
-
-
+        Position innerWallStart = new Position(start.x, floorStart.y +  verticalDir);
+        // The end of horizon wall
+        Position wallEnd = drawHorizonHallway(world, start, horizon, horDis);
+        Position floorEnd = new Position(wallEnd.x, floorStart.y);
         floorStart = drawCorner(world, floorStart, floorEnd, horizon);
+        Position innerWallEnd = drawHorizonHallway(world, innerWallStart, horizon, horDis - 2);
 
-        start = end;
-        end = drawVerticalHallway(world, end, vertical, velDis);
-        floorEnd = new Position(floorStart.x, end.y);
+        start = wallEnd;
+        wallEnd = drawVerticalHallway(world, wallEnd, vertical, velDis);
+        floorEnd = new Position(floorStart.x, wallEnd.y);
         drawCorner(world, floorStart, floorEnd, vertical);
+        drawVerticalHallway(world, innerWallEnd, vertical, velDis - 2);
     }
 
     @Override
@@ -162,4 +212,33 @@ public class MapGenerator {
         }
         return sb.toString();
     }
+
+    public void drawRoom(TETile[][] world, Room room) {
+        // Draw the Wall
+        for (int i = 0; i <= room.rightUp.x - room.leftUp.x; i++) {
+            if (world[i + room.leftUp.x][room.leftUp.y].equals(Tileset.NOTHING)) {
+                world[i + room.leftUp.x][room.leftUp.y] = Tileset.WALL;
+            }
+            if (world[i + room.leftDown.x][room.leftDown.y].equals(Tileset.NOTHING)) {
+                world[i + room.leftDown.x][room.leftDown.y] = Tileset.WALL;
+            }
+        }
+
+        for (int i = 0; i <= room.leftUp.y - room.leftDown.y; i++) {
+            if (world[room.leftDown.x][room.leftDown.y + i].equals(Tileset.NOTHING)) {
+                world[room.leftDown.x][room.leftDown.y + i] = Tileset.WALL;
+            }
+            if (world[i + room.rightDown.x][room.rightDown.y + i].equals(Tileset.NOTHING)) {
+                world[room.rightDown.x][room.rightDown.y + i] = Tileset.WALL;
+            }
+        }
+
+        while (room.leftDown.y < room.rightUp.y) {
+            drawCorner(world, room.leftDown, room.rightDown, Direction.RIGHT);
+            room.leftDown.y += 1;
+            room.rightDown.y += 1;
+        }
+    }
+
+
 }
