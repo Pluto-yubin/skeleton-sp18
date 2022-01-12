@@ -13,9 +13,9 @@ import java.util.Arrays;
  * @date 2022/1/9 21:39
  */
 public class MapVisualTest {
-    static MapGenerator generator = new MapGenerator();
+    MapGenerator generator = new MapGenerator();
     static TERenderer ter = new TERenderer();
-    static TETile[][] world = new TETile[10][10];
+    static TETile[][] world = new TETile[50][50];
 
     @Test
     public void testList() {
@@ -26,19 +26,18 @@ public class MapVisualTest {
     }
 
     public static void main(String[] args) {
+        MapGenerator generator = new MapGenerator(world, 1234);
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {
                 world[i][j] = Tileset.NOTHING;
             }
         }
-        generator.finalWorldFrame = world;
-        generator.seed = 1234;
         ter.initialize(world.length, world[0].length);
 //        generator.drawLHall(world, new Position(3, 3), MapGenerator.Direction.RIGHT, MapGenerator.Direction.UP, 5, 5);
 //        System.out.println(generator);
 //        ter.renderFrame(world);
         Room room1 = new Room(new Position(0, 3), new Position(0, 0), new Position(3, 3), new Position(3, 0));
-        generator.drawRoom(world, room1);
+        world = generator.generateMap();
         ter.renderFrame(world);
     }
 }

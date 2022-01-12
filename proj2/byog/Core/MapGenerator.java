@@ -43,11 +43,11 @@ public class MapGenerator {
             }
         }
 
-        int roomLength = RandomUtils.uniform(RANDOM, 1, 5);
-        int roomHeight = RandomUtils.uniform(RANDOM, 1, 5);
+        int roomLength = RandomUtils.uniform(RANDOM, 1, 10);
+        int roomHeight = RandomUtils.uniform(RANDOM, 1, 10);
         Room room = new Room(
+                new Position(0, roomHeight),
                 new Position(0, 0),
-                new Position(0, roomLength),
                 new Position(roomLength, roomHeight),
                 new Position(roomLength, 0)
         );
@@ -60,12 +60,16 @@ public class MapGenerator {
             return;
         }
         drawRoom(finalWorldFrame, room);
+//        return;
         int roomLength = room.rightDown.x - room.leftDown.x;
         int roomHeigth = room.rightUp.y - room.rightDown.y;
         double hallWayDire = RandomUtils.uniform(RANDOM);
-        if (hallWayDire < 0.25) {
-            Position hallway = new Position(RandomUtils.uniform(RANDOM, 0, roomLength - 1), roomHeigth);
-
+        Position hallway = new Position(room.rightDown.x, RandomUtils.uniform(RANDOM, room.rightDown.y, room.rightUp.y));
+        int hallwayHorizonLen = RandomUtils.uniform(RANDOM, 1, 10);
+        int hallwayVerticalLen = RandomUtils.uniform(RANDOM, 1, 10);
+        if (hallway.x + hallwayHorizonLen < world[0].length) {
+            drawLHall(world, hallway, Direction.RIGHT, Direction.UP, hallwayHorizonLen, hallwayVerticalLen);
+            world[hallway.x][hallway.y + 1] = FLOOR;
         }
     }
 
@@ -126,7 +130,7 @@ public class MapGenerator {
      * @param end
      * @param dir
      */
-    private Position drawCorner(TETile[][] world, Position start, Position end, Direction dir) {
+    private Position drawCorner(TETile[][] world, Position start, Position end, Direction dir, TETile tileType) {
         int direction = 0, distance = 0;
         if (dir == Direction.RIGHT || dir == Direction.UP) {
             direction = 1;
@@ -139,16 +143,16 @@ public class MapGenerator {
             for (int i = 0; i <= distance; i++) {
                 TETile tile = world[start.x + i * direction][start.y];
                 if (tile.equals(Tileset.NOTHING)) {
-                    world[start.x + i * direction][start.y] = Tileset.FLOOR;
+                    world[start.x + i * direction][start.y] = tileType;
                 }
             }
 
         } else {
             distance = Math.abs(start.y - end.y);
             for (int i = 0; i <= distance; i++) {
-                TETile tile = world[start.x + i * direction][start.y];
+                TETile tile = world[start.x][start.y+ i * direction];
                 if (tile.equals(Tileset.NOTHING)) {
-                    world[start.x + i * direction][start.y] = Tileset.FLOOR;
+                    world[start.x][start.y + i * direction] = Tileset.FLOOR;
                 }
             }
         }
@@ -183,15 +187,16 @@ public class MapGenerator {
         Position floorStart = new Position(start.x, start.y + verticalDir);
         Position innerWallStart = new Position(start.x, floorStart.y +  verticalDir);
         // The end of horizon wall
-        Position wallEnd = drawHorizonHallway(world, start, horizon, horDis);
+        Position wallEnd = drawCorner(world, start, new Position(start.x + horDis, start.y), horizon, Tileset.WALL);
+//        Position wallEnd = drawHorizonHallway(world, start, horizon, horDis);
         Position floorEnd = new Position(wallEnd.x, floorStart.y);
-        floorStart = drawCorner(world, floorStart, floorEnd, horizon);
+        floorStart = drawCorner(world, floorStart, floorEnd, horizon, Tileset.FLOOR);
         Position innerWallEnd = drawHorizonHallway(world, innerWallStart, horizon, horDis - 2);
 
         start = wallEnd;
         wallEnd = drawVerticalHallway(world, wallEnd, vertical, velDis);
         floorEnd = new Position(floorStart.x, wallEnd.y);
-        drawCorner(world, floorStart, floorEnd, vertical);
+        drawCorner(world, floorStart, floorEnd, vertical, Tileset.FLOOR);
         drawVerticalHallway(world, innerWallEnd, vertical, velDis - 2);
     }
 
@@ -232,12 +237,14 @@ public class MapGenerator {
                 world[room.rightDown.x][room.rightDown.y + i] = Tileset.WALL;
             }
         }
-
+        int temp1 = room.leftDown.y, temp2 = room.rightDown.y;
         while (room.leftDown.y < room.rightUp.y) {
-            drawCorner(world, room.leftDown, room.rightDown, Direction.RIGHT);
+            drawCorner(world, room.leftDown, room.rightDown, Direction.RIGHT, FLOOR);
             room.leftDown.y += 1;
             room.rightDown.y += 1;
         }
+        room.leftDown.y = temp1;
+        room.rightDown.y = temp2;
     }
 
 
