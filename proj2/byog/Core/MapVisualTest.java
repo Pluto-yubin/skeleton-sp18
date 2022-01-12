@@ -38,6 +38,8 @@ public class MapVisualTest {
 //        ter.renderFrame(world);
         Room room1 = new Room(new Position(0, 3), new Position(0, 0), new Position(3, 3), new Position(3, 0));
         world = generator.generateMap();
+//        generator.drawRoom(world, room1);
+//        generator.drawLHall(world, new Position(4, 5), MapGenerator.Direction.LEFT, MapGenerator.Direction.UP, 5, 5);
         ter.renderFrame(world);
     }
 }

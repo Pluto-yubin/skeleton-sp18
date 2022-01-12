@@ -102,6 +102,7 @@ public class HexWorld {
         TETile[][] hexTiles = new TETile[WIDTH][HEIGHT];
         addHexagon(hexTiles, SIDE_LENGTH);
         hexTiles[0][0] = Tileset.FLOWER;
+        hexTiles[1][0] = Tileset.FLOWER;
         ter.renderFrame(hexTiles);
     }
 }

@@ -27,4 +27,9 @@ public class Position {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+    public Position horizonChange(int var) {
+        int vx = var + x;
+        return new Position(vx, y);
+    }
 }
