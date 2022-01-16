@@ -12,7 +12,7 @@ import java.util.Random;
  */
 public class HexWorld {
     private static final int WIDTH = 30;
-    private static final int HEIGHT = 30;
+    private static final int HEIGHT = 50;
     private static final int SIDE_LENGTH = 3;
 
     private static final long SEED = 2873123;
@@ -102,7 +102,8 @@ public class HexWorld {
         TETile[][] hexTiles = new TETile[WIDTH][HEIGHT];
         addHexagon(hexTiles, SIDE_LENGTH);
         hexTiles[0][0] = Tileset.FLOWER;
-        hexTiles[1][0] = Tileset.FLOWER;
+        hexTiles[29][0] = Tileset.FLOWER;
         ter.renderFrame(hexTiles);
+        System.out.println(hexTiles.length);
     }
 }

@@ -26,7 +26,7 @@ public class MapVisualTest {
     }
 
     public static void main(String[] args) {
-        MapGenerator generator = new MapGenerator(world, 1234);
+        MapGenerator generator = new MapGenerator(world, 4321);
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {
                 world[i][j] = Tileset.NOTHING;
