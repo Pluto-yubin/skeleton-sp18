@@ -24,62 +24,65 @@ public class Position {
         this.y = y;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Position position = (Position) o;
-        return x == position.x && y == position.y;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-
-
     /**
-     *
      * @param random
      * @param room
      * @param length
      * @param height
-     * @param firstDir 走廊第一个方向，为上下左右中的一个
+     * @param firstDir  走廊第一个方向，为上下左右中的一个
      * @param secondDir
      * @return
      */
     public static Position createHallsInRoom(Random random, Room room, int length, int height, MapGenerator.Direction firstDir, MapGenerator.Direction secondDir) {
         Position hallway = null;
         int xDirSign = 1, yDirSign = 1;
-
+        if (firstDir == MapGenerator.Direction.DOWN) {
+            yDirSign = -1;
+        } else if (firstDir == MapGenerator.Direction.LEFT) {
+            xDirSign = -1;
+        }
         switch (firstDir) {
-            case UP: hallway = new Position(RandomUtils.uniform(random, room.leftUp.x + 1, room.rightUp.x - 1), room.leftUp.y);
+            case UP: if (room.rightUp.y >= height - 1) { return null; }
+                hallway = new Position(RandomUtils.uniform(random, room.leftUp.x + 1, room.rightUp.x - 1), room.leftUp.y);
                 if (secondDir == MapGenerator.Direction.LEFT) {
                     xDirSign = -1;
                 }
                 break;
-            case DOWN: hallway = new Position(RandomUtils.uniform(random, room.leftUp.x + 1, room.rightUp.x - 1), room.leftDown.y);
+            case DOWN: if (room.rightDown.y <= 0) { return null; }
+                hallway = new Position(RandomUtils.uniform(random, room.leftUp.x + 1, room.rightUp.x - 1), room.leftDown.y);
                 if (secondDir == MapGenerator.Direction.LEFT) {
                     xDirSign = -1;
                 }
                 break;
-            case LEFT: hallway = new Position(room.leftDown.x, RandomUtils.uniform(random, room.leftDown.y + 1, room.leftUp.y - 1));
+            case LEFT: if (room.leftDown.x <= 0) { return null; }
+                hallway = new Position(room.leftDown.x, RandomUtils.uniform(random, room.leftDown.y + 1, room.leftUp.y - 1));
                 if (secondDir == MapGenerator.Direction.DOWN) {
                     yDirSign = -1;
                 }
                 break;
-            case RIGHT: hallway = new Position(room.rightDown.x, RandomUtils.uniform(random, room.rightDown.y + 1, room.rightUp.y - 1));
+            case RIGHT: if (room.rightDown.x >= length - 1) { return null; }
+                hallway = new Position(room.rightDown.x, RandomUtils.uniform(random, room.rightDown.y + 1, room.rightUp.y - 1));
                 if (secondDir == MapGenerator.Direction.DOWN) {
                     yDirSign = -1;
                 }
                 break;
         }
 
-        int hallwayVerticalLen = RandomUtils.uniform(random, 1, 10);
+        int hallwayVerticalLen = RandomUtils.uniform(random, 3, 10);
         hallway.yDistance = getDistance(hallway.y, hallwayVerticalLen, height, yDirSign) * yDirSign;
-        int hallwayHorizonLen = RandomUtils.uniform(random, 1, 10);
+        int hallwayHorizonLen = RandomUtils.uniform(random, 3, 10);
         hallway.xDistance = getDistance(hallway.x, hallwayHorizonLen, length, xDirSign) * xDirSign;
-
+        if (RandomUtils.uniform(random) < 0.5) {
+            if (isVerticalDirection(firstDir)) {
+                hallway.xDistance = 0;
+            } else {
+                hallway.yDistance = 0;
+            }
+        }
+        int x = hallway.x + hallway.xDistance, y = hallway.y + hallway.yDistance;
+        if (x <= 2 || x >= length - 3 || y <= 2 || y >= height - 3) {
+            hallway.close = true;
+        }
         hallway.direction = firstDir;
         return hallway;
     }
@@ -87,7 +90,7 @@ public class Position {
     public static int getDistance(int hallway, int hallLen, int totalLen, int dirSign) {
         int checkBoundary = hallway + hallLen * dirSign;
         int distance;
-        if (checkBoundary <= totalLen - 1 || checkBoundary >= 0) {
+        if (checkBoundary <= totalLen - 1 && checkBoundary >= 0) {
             distance = hallLen;
         } else {
             if (checkBoundary < 0) {
@@ -115,7 +118,25 @@ public class Position {
         return position1;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return x == position.x && y == position.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
     public boolean needClose() {
         return close;
     }
+
+    public static boolean isVerticalDirection(MapGenerator.Direction direction) {
+        return direction == MapGenerator.Direction.UP || direction == MapGenerator.Direction.DOWN;
+    }
+
 }
