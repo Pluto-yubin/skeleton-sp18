@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import static byog.TileEngine.Tileset.WALL;
+
 /**
  * @auther Zhang Yubin
  * @date 2022/1/12 15:37
@@ -89,7 +91,7 @@ public class Room {
             return null;
         }
         MapGenerator.Direction direction = getGenerateDirection(hall);
-        hall = new Position(hall.x + hall.xDistance - 1, hall.y + hall.yDistance - 1);
+        hall = Position.getHallEndPos(hall);
         Room room = new Room();
         int left = RandomUtils.uniform(random, 3, 5);
         int right = RandomUtils.uniform(random, 3, 5);
@@ -123,12 +125,13 @@ public class Room {
         }
 
         if (Room.overlap(room)) {
+            world[hall.x][hall.y] = WALL;
             return null;
         }
         return room;
     }
 
-    private static MapGenerator.Direction getGenerateDirection(Position hallway) {
+    public static MapGenerator.Direction getGenerateDirection(Position hallway) {
         MapGenerator.Direction direction = hallway.direction;
         if (direction == MapGenerator.Direction.LEFT || direction == MapGenerator.Direction.RIGHT) {
             if (hallway.yDistance > 0) {

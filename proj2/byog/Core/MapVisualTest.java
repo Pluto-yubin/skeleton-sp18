@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class MapVisualTest {
     MapGenerator generator = new MapGenerator();
     static TERenderer ter = new TERenderer();
-    static TETile[][] world = new TETile[50][50];
+    static TETile[][] world = new TETile[80][30];
 
     @Test
     public void testList() {
@@ -33,7 +33,10 @@ public class MapVisualTest {
             }
         }
         ter.initialize(world.length, world[0].length);
-//        generator.drawLHall(world, new Position(3, 3), MapGenerator.Direction.RIGHT, MapGenerator.Direction.UP, 5, 5);
+//        Position position = new Position(3, 3);
+//        position.xDistance = 5;
+//        position.yDistance = 5;
+//        generator.drawLHall(world, position);
 //        System.out.println(generator);
 //        ter.renderFrame(world);
         Room room1 = new Room(new Position(0, 3), new Position(0, 0), new Position(3, 3), new Position(3, 0));
