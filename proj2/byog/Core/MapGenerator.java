@@ -50,8 +50,6 @@ public class MapGenerator {
         int roomLength = RandomUtils.uniform(RANDOM, 3, 10);
         int roomHeight = RandomUtils.uniform(RANDOM, 3, 10);
         int random = RandomUtils.uniform(RANDOM, 0, Math.min(finalWorldFrame.length, finalWorldFrame[0].length) - Math.max(roomLength, roomHeight));
-        // For debug
-        random = 5;
         Room room = new Room(
                 new Position(random, roomHeight + random),
                 new Position(random, random),

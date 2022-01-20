@@ -93,10 +93,10 @@ public class Room {
         MapGenerator.Direction direction = getGenerateDirection(hall);
         hall = Position.getHallEndPos(hall);
         Room room = new Room();
-        int left = RandomUtils.uniform(random, 3, 5);
-        int right = RandomUtils.uniform(random, 3, 5);
-        int up = RandomUtils.uniform(random, 3, 5);
-        int down = RandomUtils.uniform(random, 3, 5);
+        int left = RandomUtils.uniform(random, 3, 10);
+        int right = RandomUtils.uniform(random, 3, 10);
+        int up = RandomUtils.uniform(random, 3, 10);
+        int down = RandomUtils.uniform(random, 3, 10);
         switch (direction) {
             case UP:
                 room.leftDown = new Position(Math.max(hall.x - left, 0), hall.y);
@@ -112,7 +112,7 @@ public class Room {
                 break;
             case LEFT:
                 room.rightDown = new Position(hall.x, Math.max(hall.y - down, 0));
-                room.rightUp = new Position(room.rightDown.x, Math.min(world.length - 1, hall.y + up));
+                room.rightUp = new Position(room.rightDown.x, Math.min(world[0].length - 1, hall.y + up));
                 room.leftDown = new Position(Math.max(0, hall.x - left), room.rightDown.y);
                 room.leftUp = new Position(room.leftDown.x, room.rightUp.y);
                 break;

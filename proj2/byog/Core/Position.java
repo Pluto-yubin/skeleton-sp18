@@ -120,14 +120,6 @@ public class Position {
         return position1;
     }
 
-    public static Position modifyClose(Position position) {
-        Position position1 = new Position(position.x, position.y);
-        position1.xDistance = position.xDistance;
-        position1.yDistance = position.yDistance;
-        position1.close = !position.close;
-        return position1;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -166,8 +158,6 @@ public class Position {
             ySign = 1;
         }
         return Position.modifyXY(position, position.xDistance + xSign, position.yDistance + ySign);
-
-
     }
 
 }
