@@ -56,37 +56,47 @@ public class MapGenerator {
                 new Position(roomLength + random, roomHeight + random),
                 new Position(roomLength + random, random)
         );
-        generateMapRecur(finalWorldFrame, room);
+        generateMapRecur(finalWorldFrame, room, null);
         return finalWorldFrame;
     }
 
-    private void generateMapRecur(TETile[][] world, Room room) {
+    /**
+     * hall为room所连接的那条hall
+     * @param world
+     * @param room
+     * @param hall
+     */
+    private void generateMapRecur(TETile[][] world, Room room, Position hall) {
         if (!drawRoom(finalWorldFrame, room)) {
+            if (hall != null) {
+                Position temp = Position.getHallEndPos(hall);
+                world[temp.x][temp.y] = WALL;
+            }
             return;
         }
         Position hallway;
         hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.RIGHT, getVelDirRandomly());
         if (drawHallway(world, hallway, false)) {
             Room room1 = Room.createRoom(world, hallway, RANDOM);
-            generateMapRecur(world, room1);
+            generateMapRecur(world, room1, hallway);
         }
 
         hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.DOWN, getHorDirRandomly());
         if (drawHallway(world, hallway, true)) {
             Room room2 = Room.createRoom(world, hallway, RANDOM);
-            generateMapRecur(world, room2);
+            generateMapRecur(world, room2, hallway);
         }
 
         hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.UP, getHorDirRandomly());
         if (drawHallway(world, hallway, true)) {
             Room room3 = Room.createRoom(world, hallway, RANDOM);
-            generateMapRecur(world, room3);
+            generateMapRecur(world, room3, hallway);
         }
 
         hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.LEFT, getVelDirRandomly());
         if (drawHallway(world, hallway, false)) {
             Room room4 = Room.createRoom(world, hallway, RANDOM);
-            generateMapRecur(world, room4);
+            generateMapRecur(world, room4, hallway);
         }
 
     }
@@ -311,7 +321,7 @@ public class MapGenerator {
         if (room == null || room.leftDown.x < 0 || room.rightUp.x >= world.length || room.leftDown.y < 0 || room.rightUp.y > world[0].length) {
             return false;
         }
-        if (Room.overlap(room)) {
+        if (Room.overlap(room) || hasObstacleInRoom(world, room)) {
             return false;
         }
         // Draw the Wall
@@ -330,6 +340,18 @@ public class MapGenerator {
         room.rightDown.y = temp2;
         Room.addExistRooms(room);
         return true;
+    }
+
+    private boolean hasObstacleInRoom(TETile[][] world, Room room) {
+        int count = 0;
+        for (int i = room.leftDown.x; i < room.rightDown.x; i++) {
+            for (int j = room.leftDown.y; j < room.leftUp.y; j++) {
+                if (world[i][j] != NOTHING) {
+                    count += 1;
+                }
+            }
+        }
+        return count > 3;
     }
 
     enum Direction {

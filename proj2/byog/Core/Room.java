@@ -106,7 +106,7 @@ public class Room {
                 break;
             case DOWN:
                 room.leftUp = new Position(Math.max(hall.x - left, 0), hall.y);
-                room.leftDown = new Position(room.leftUp.x, Math.min(hall.y - down, world[0].length - 1));
+                room.leftDown = new Position(room.leftUp.x, Math.max(hall.y - down, 0));
                 room.rightUp = new Position(Math.min(world.length - 1, hall.x + right), room.leftUp.y);
                 room.rightDown = new Position(room.rightUp.x, room.leftDown.y);
                 break;
