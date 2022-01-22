@@ -54,25 +54,37 @@ public class Position {
             xDirSign = -1;
         }
         switch (firstDir) {
-            case UP: if (ruy >= height - 3) { return null; }
+            case UP:
+                if (ruy >= height - 3) {
+                    return null;
+                }
                 hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), luy);
                 if (secondDir == MapGenerator.Direction.LEFT) {
                     xDirSign = -1;
                 }
                 break;
-            case DOWN: if (rdy <= 2) { return null; }
+            case DOWN:
+                if (rdy <= 2) {
+                    return null;
+                }
                 hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), ldy);
                 if (secondDir == MapGenerator.Direction.LEFT) {
                     xDirSign = -1;
                 }
                 break;
-            case LEFT: if (ldx <= 2) { return null; }
+            case LEFT:
+                if (ldx <= 2) {
+                    return null;
+                }
                 hallway = new Position(ldx, RandomUtils.uniform(random, ldy + 1, luy - 1));
                 if (secondDir == MapGenerator.Direction.DOWN) {
                     yDirSign = -1;
                 }
                 break;
-            case RIGHT: if (rdx >= length - 3) { return null; }
+            case RIGHT:
+                if (rdx >= length - 3) {
+                    return null;
+                }
                 hallway = new Position(rdx, RandomUtils.uniform(random, rdy + 1, ruy - 1));
                 if (secondDir == MapGenerator.Direction.DOWN) {
                     yDirSign = -1;
@@ -128,7 +140,9 @@ public class Position {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Position position = (Position) o;
         return x == position.x && y == position.y;
     }
