@@ -15,13 +15,14 @@ import static byog.TileEngine.Tileset.WALL;
  */
 public class Room {
     Position leftUp, leftDown, rightUp, rightDown;
-    private static List<Room> list = new ArrayList<>();
+    private static List<Room> list;
 
     public Room(Position leftUp, Position leftDown, Position rightUp, Position rightDown) {
         this.leftUp = leftUp;
         this.leftDown = leftDown;
         this.rightUp = rightUp;
         this.rightDown = rightDown;
+        list = new ArrayList<>();
     }
 
     public Room() { }

@@ -24,7 +24,7 @@ public class MapGenerator {
     private static Direction UP = Direction.UP;
     private static Direction DOWN = Direction.DOWN;
 
-    public MapGenerator(TETile[][] finalWorldFrame, int seed) {
+    public MapGenerator(TETile[][] finalWorldFrame, long seed) {
         this.finalWorldFrame = finalWorldFrame;
         RANDOM = new Random(seed);
     }
@@ -46,9 +46,7 @@ public class MapGenerator {
         if (finalWorldFrame == null) {
             return null;
         }
-        if (RANDOM == null) {
-            RANDOM = new Random(seed);
-        }
+        RANDOM = new Random(seed);
         // Initiate map
         for (int i = 0; i < finalWorldFrame.length; i++) {
             for (int j = 0; j < finalWorldFrame[0].length; j++) {
