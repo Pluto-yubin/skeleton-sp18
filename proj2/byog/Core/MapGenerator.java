@@ -75,7 +75,6 @@ public class MapGenerator {
      * @param hall
      */
     private void generateMapRecur(TETile[][] world, Room room, Position hall) {
-        int len = world.length, hi = world[0].length;
         if (!drawRoom(finalWorldFrame, room)) {
             if (hall != null) {
                 Position temp = Position.getHallEndPos(hall);
@@ -83,21 +82,21 @@ public class MapGenerator {
             }
             return;
         }
-        draw(world, room, len, hi, RIGHT, DOWN);
+        draw(world, room, RIGHT, DOWN);
 
-        draw(world, room, len, hi, UP, LEFT);
+        draw(world, room, UP, LEFT);
 
     }
 
-    private void draw(TETile[][] world, Room room, int len, int hi, Direction right, Direction down) {
+    private void draw(TETile[][] world, Room room, Direction right, Direction down) {
         Position hallway;
-        hallway = Position.createHallsInRoom(RANDOM, room, world, right);
+        hallway = Position.createHalls(RANDOM, room, world, right);
         if (drawHallway(world, hallway)) {
             Room room1 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room1, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, world, down);
+        hallway = Position.createHalls(RANDOM, room, world, down);
         if (drawHallway(world, hallway)) {
             Room room2 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room2, hallway);

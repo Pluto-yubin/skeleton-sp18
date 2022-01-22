@@ -3,8 +3,6 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @auther Zhang Yubin
