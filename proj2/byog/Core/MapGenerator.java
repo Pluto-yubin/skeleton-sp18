@@ -70,6 +70,7 @@ public class MapGenerator {
      * @param hall
      */
     private void generateMapRecur(TETile[][] world, Room room, Position hall) {
+        int len = world.length, hi = world[0].length;
         if (!drawRoom(finalWorldFrame, room)) {
             if (hall != null) {
                 Position temp = Position.getHallEndPos(hall);
@@ -78,25 +79,25 @@ public class MapGenerator {
             return;
         }
         Position hallway;
-        hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.RIGHT, getVelDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.RIGHT, getVelDirRandomly());
         if (drawHallway(world, hallway)) {
             Room room1 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room1, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.DOWN, getHorDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.DOWN, getHorDirRandomly());
         if (drawHallway(world, hallway)) {
             Room room2 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room2, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.UP, getHorDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.UP, getHorDirRandomly());
         if (drawHallway(world, hallway)) {
             Room room3 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room3, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, world.length, world[0].length, Direction.LEFT, getVelDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.LEFT, getVelDirRandomly());
         if (drawHallway(world, hallway)) {
             Room room4 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room4, hallway);
@@ -146,18 +147,19 @@ public class MapGenerator {
      * @param end
      */
     private void drawTile(TETile[][] world, Position start, Position end, TETile tileType) {
+        int len = world.length, height = world[0].length;
         if (start.x != end.x && start.y != end.y) {
             throw new RuntimeException("你这叫我怎么画？");
         }
 
         int left = Math.min(start.x, end.x), right = Math.max(start.x, end.x);
         int up = Math.max(start.y, end.y), down = Math.min(start.y, end.y);
-        for (int i = Math.max(left, 0); i <= Math.min(right, world.length - 1) && up == down; i++) {
+        for (int i = Math.max(left, 0); i <= Math.min(right, len) && up == down; i++) {
             if (world[i][up] == NOTHING) {
                 world[i][up] = tileType;
             }
         }
-        for (int i = Math.max(down, 0); i <= Math.min(up, world[0].length - 1) && left == right; i++) {
+        for (int i = Math.max(down, 0); i <= Math.min(up, height - 1) && left == right; i++) {
             if (world[left][i] == NOTHING) {
                 world[left][i] = tileType;
             }
@@ -211,58 +213,61 @@ public class MapGenerator {
      * @return
      */
     private boolean checkObstacleInHall(TETile[][] world, Position start) {
+        int x = start.xDistance, y = start.yDistance;
         switch (start.direction) {
             case UP:
-                return checkHallVertical(world, start, Position.modifyXY(start, 0, start.yDistance));
+                return checkHallVertical(world, start, Position.modifyXY(start, 0, y));
             case DOWN:
-                return checkHallVertical(world, Position.modifyXY(start, 0, start.yDistance), start);
+                return checkHallVertical(world, Position.modifyXY(start, 0, y), start);
             case LEFT:
-                return checkHallHorizon(world, Position.modifyXY(start, start.xDistance, 0), start);
+                return checkHallHorizon(world, Position.modifyXY(start, x, 0), start);
             case RIGHT:
-                return checkHallHorizon(world, start, Position.modifyXY(start, start.xDistance, 0));
+                return checkHallHorizon(world, start, Position.modifyXY(start, x, 0));
             default:
                 return false;
         }
     }
 
     private boolean checkHallVertical(TETile[][] world, Position start, Position end) {
-        if (checkVertical(world, start, end)) {
+        if (checkVer(world, start, end)) {
             return true;
-        } else if (checkVertical(world, Position.modifyXY(start, 1, 0), Position.modifyXY(end, 1, 0))) {
+        } else if (checkVer(world, Position.modifyXY(start, 1, 0), Position.modifyXY(end, 1, 0))) {
             return true;
-        } else if (checkVertical(world, Position.modifyXY(start, -1, 0), Position.modifyXY(end, -1, 0))) {
+        } else if (checkVer(world, Position.modifyXY(start, -1, 0), Position.modifyXY(end, -1, 0))) {
             return true;
         }
         Direction direction = Room.getGenerateDirection(start);
         if (direction != start.direction) {
             if (start.direction == Direction.DOWN) {
-                return checkObstacleInHall(world, new Position(end.x, end.y + end.yDistance + 1, false, end.xDistance, 0, direction));
+                Position temp = new Position(end.x, end.y + end.yDistance + 1, false, end.xDistance, 0, direction);
+                return checkObstacleInHall(world, temp);
             }
-            return checkObstacleInHall(world, new Position(start.x, start.y + start.yDistance - 1, false, start.xDistance, 0, direction));
+            Position temp = new Position(start.x, start.y + start.yDistance - 1, false, start.xDistance, 0, direction);
+            return checkObstacleInHall(world, temp);
         }
         return false;
     }
 
     private boolean checkHallHorizon(TETile[][] world, Position start, Position end) {
-        if (checkHorizon(world, start, end)) {
+        if (checkHor(world, start, end)) {
             return true;
-        } else if (checkHorizon(world, Position.modifyXY(start, 0, -1), Position.modifyXY(end, 0, -1))) {
+        } else if (checkHor(world, Position.modifyXY(start, 0, -1), Position.modifyXY(end, 0, -1))) {
             return true;
-        } else if (checkHorizon(world, Position.modifyXY(start, 0, 1), Position.modifyXY(end, 0, 1))) {
+        } else if (checkHor(world, Position.modifyXY(start, 0, 1), Position.modifyXY(end, 0, 1))) {
             return true;
         }
         Direction direction = Room.getGenerateDirection(start);
         if (direction != start.direction) {
             if (start.direction == Direction.LEFT) {
-                return checkObstacleInHall(world, new Position(end.x + end.xDistance + 1, end.y , false, 0, end.yDistance, direction));
+                return checkObstacleInHall(world, new Position(end.x + end.xDistance + 1, end.y, false, 0, end.yDistance, direction));
             }
-            return checkObstacleInHall(world, new Position(start.x + start.xDistance - 1, start.y , false, 0, start.yDistance, direction));
+            return checkObstacleInHall(world, new Position(start.x + start.xDistance - 1, start.y, false, 0, start.yDistance, direction));
 
         }
         return false;
     }
 
-    private boolean checkHorizon(TETile[][] world, Position start, Position end) {
+    private boolean checkHor(TETile[][] world, Position start, Position end) {
         int count = 0;
         for (int i = Math.max(0, start.x); i < Math.min(world.length - 1, end.x); i++) {
             if (world[i][start.y] != NOTHING) {
@@ -272,7 +277,7 @@ public class MapGenerator {
         return count > 1;
     }
 
-    private boolean checkVertical(TETile[][] world, Position start, Position end) {
+    private boolean checkVer(TETile[][] world, Position start, Position end) {
         int count = 0;
         for (int i = Math.max(start.y, 0); i < Math.min(world[0].length - 1, end.y); i++) {
             if (world[start.x][i] != NOTHING) {
@@ -321,7 +326,8 @@ public class MapGenerator {
     }
 
     public boolean drawRoom(TETile[][] world, Room room) {
-        // delete room.leftDown.x < 0 || room.rightUp.x >= world.length || room.leftDown.y < 0 || room.rightUp.y > world[0].length
+        // delete room.leftDown.x < 0 || room.rightUp.x >= world.length
+        // || room.leftDown.y < 0 || room.rightUp.y > world[0].length
         if (room == null) {
             return false;
         }
