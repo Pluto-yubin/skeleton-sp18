@@ -4,8 +4,6 @@ import byog.TileEngine.TETile;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 /**
  * @auther Zhang Yubin
  * @date 2022/1/22 23:35
