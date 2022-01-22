@@ -40,8 +40,8 @@ public class Room {
     }
 
     private static boolean checkRoomOverlap(Room room1, Room room2) {
-        if (integerOverlap(room1.rightDown.x, room1.leftDown.x, room2.rightDown.x, room2.leftDown.x)) {
-            if (integerOverlap(room1.leftUp.y, room1.leftDown.y, room2.leftUp.y, room2.leftDown.y)) {
+        if (intOverlap(room1.rightDown.x, room1.leftDown.x, room2.rightDown.x, room2.leftDown.x)) {
+            if (intOverlap(room1.leftUp.y, room1.leftDown.y, room2.leftUp.y, room2.leftDown.y)) {
                 return true;
             }
         }
@@ -56,7 +56,7 @@ public class Room {
      * @param y2
      * @return
      */
-    private static boolean integerOverlap(int x1, int y1, int x2, int y2) {
+    private static boolean intOverlap(int x1, int y1, int x2, int y2) {
         if (x1 < x2 && x1 > y2 || x2 < x1 && x2 > y1) {
             return true;
         }
@@ -76,7 +76,9 @@ public class Room {
             return false;
         }
         Room room = (Room) o;
-        return Objects.equals(leftUp, room.leftUp) && Objects.equals(leftDown, room.leftDown) && Objects.equals(rightUp, room.rightUp) && Objects.equals(rightDown, room.rightDown);
+        boolean b1 = Objects.equals(leftUp, room.leftUp) && Objects.equals(leftDown, room.leftDown);
+        boolean b2 = Objects.equals(rightUp, room.rightUp) && Objects.equals(rightDown, room.rightDown)
+        return b1 && b2;
     }
 
     @Override
