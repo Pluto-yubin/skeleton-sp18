@@ -58,23 +58,23 @@ public class Position {
     }
     /**
      * @param ran
-     * @param room
-     * @param dir  走廊第一个方向，为上下左右中的一个
+     * @param r
+     * @param d  走廊第一个方向，为上下左右中的一个
      * @return
      */
-    static Position createHalls(Random ran, Room room, TETile[][] w, MapGenerator.Direction dir) {
+    public static Position createHalls(Random ran, Room r, TETile[][] w, MapGenerator.Direction d) {
         Position hallway;
         int height = w[0].length, length = w.length;
-        int rux = room.rightUp.x, ruy = room.rightUp.y, lux = room.leftUp.x, luy = room.leftUp.y;
-        int rdx = room.rightDown.x, rdy = room.rightDown.y;
-        int ldx = room.leftDown.x, ldy = room.leftDown.y;
+        int rux = r.rightUp.x, ruy = r.rightUp.y, lux = r.leftUp.x, luy = r.leftUp.y;
+        int rdx = r.rightDown.x, rdy = r.rightDown.y;
+        int ldx = r.leftDown.x, ldy = r.leftDown.y;
         int xDirSign = 1, yDirSign = 1;
-        if (dir == DOWN) {
+        if (d == DOWN) {
             yDirSign = -1;
-        } else if (dir == LEFT) {
+        } else if (d == LEFT) {
             xDirSign = -1;
         }
-        switch (dir) {
+        switch (d) {
             case UP:
                 if (ruy >= height - 3) {
                     return null;
@@ -120,7 +120,7 @@ public class Position {
         int hallwayHorizonLen = RandomUtils.uniform(ran, 3, 10);
         hallway.xDistance = getDistance(hallway.x, hallwayHorizonLen, length, xDirSign) * xDirSign;
         if (RandomUtils.uniform(ran) < 0.5) {
-            if (isVerticalDirection(dir)) {
+            if (isVerticalDirection(d)) {
                 hallway.xDistance = 0;
             } else {
                 hallway.yDistance = 0;
@@ -130,7 +130,7 @@ public class Position {
         if (x <= 2 || x >= length - 3 || y <= 2 || y >= height - 3) {
             hallway.close = true;
         }
-        hallway.direction = dir;
+        hallway.direction = d;
         return hallway;
     }
 
