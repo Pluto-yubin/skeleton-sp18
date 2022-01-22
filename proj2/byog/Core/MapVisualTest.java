@@ -9,7 +9,6 @@ import byog.TileEngine.Tileset;
  * @date 2022/1/9 21:39
  */
 public class MapVisualTest {
-    MapGenerator generator = new MapGenerator();
     static TERenderer ter = new TERenderer();
     static TETile[][] world = new TETile[80][30];
 

@@ -88,6 +88,13 @@ public class MapGenerator {
 
     }
 
+    /**
+     * extract by idea, amazing
+     * @param world
+     * @param room
+     * @param right
+     * @param down
+     */
     private void draw(TETile[][] world, Room room, Direction right, Direction down) {
         Position hallway;
         hallway = Position.createHalls(RANDOM, room, world, right);

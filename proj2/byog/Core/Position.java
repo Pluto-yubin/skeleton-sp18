@@ -57,12 +57,12 @@ public class Position {
         return DOWN;
     }
     /**
-     * @param random
+     * @param ran
      * @param room
      * @param dir  走廊第一个方向，为上下左右中的一个
      * @return
      */
-    public static Position createHalls(Random random, Room room, TETile[][] world,  MapGenerator.Direction dir) {
+    public static Position createHalls(Random ran, Room room, TETile[][] world,  MapGenerator.Direction dir) {
         Position hallway;
         int height = world[0].length, length = world.length;
         int rux = room.rightUp.x, ruy = room.rightUp.y, lux = room.leftUp.x, luy = room.leftUp.y;
@@ -79,8 +79,8 @@ public class Position {
                 if (ruy >= height - 3) {
                     return null;
                 }
-                hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), luy);
-                if (getHorDir(random) == LEFT) {
+                hallway = new Position(RandomUtils.uniform(ran, lux + 1, rux - 1), luy);
+                if (getHorDir(ran) == LEFT) {
                     xDirSign = -1;
                 }
                 break;
@@ -88,8 +88,8 @@ public class Position {
                 if (rdy <= 2) {
                     return null;
                 }
-                hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), ldy);
-                if (getHorDir(random) == LEFT) {
+                hallway = new Position(RandomUtils.uniform(ran, lux + 1, rux - 1), ldy);
+                if (getHorDir(ran) == LEFT) {
                     xDirSign = -1;
                 }
                 break;
@@ -97,8 +97,8 @@ public class Position {
                 if (ldx <= 2) {
                     return null;
                 }
-                hallway = new Position(ldx, RandomUtils.uniform(random, ldy + 1, luy - 1));
-                if (getVelDir(random) == DOWN) {
+                hallway = new Position(ldx, RandomUtils.uniform(ran, ldy + 1, luy - 1));
+                if (getVelDir(ran) == DOWN) {
                     yDirSign = -1;
                 }
                 break;
@@ -106,8 +106,8 @@ public class Position {
                 if (rdx >= length - 3) {
                     return null;
                 }
-                hallway = new Position(rdx, RandomUtils.uniform(random, rdy + 1, ruy - 1));
-                if (getVelDir(random) == DOWN) {
+                hallway = new Position(rdx, RandomUtils.uniform(ran, rdy + 1, ruy - 1));
+                if (getVelDir(ran) == DOWN) {
                     yDirSign = -1;
                 }
                 break;
@@ -115,11 +115,11 @@ public class Position {
                 return null;
         }
 
-        int hallwayVerticalLen = RandomUtils.uniform(random, 3, 10);
+        int hallwayVerticalLen = RandomUtils.uniform(ran, 3, 10);
         hallway.yDistance = getDistance(hallway.y, hallwayVerticalLen, height, yDirSign) * yDirSign;
-        int hallwayHorizonLen = RandomUtils.uniform(random, 3, 10);
+        int hallwayHorizonLen = RandomUtils.uniform(ran, 3, 10);
         hallway.xDistance = getDistance(hallway.x, hallwayHorizonLen, length, xDirSign) * xDirSign;
-        if (RandomUtils.uniform(random) < 0.5) {
+        if (RandomUtils.uniform(ran) < 0.5) {
             if (isVerticalDirection(dir)) {
                 hallway.xDistance = 0;
             } else {

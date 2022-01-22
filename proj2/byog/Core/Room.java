@@ -77,8 +77,9 @@ public class Room {
         }
         Room room = (Room) o;
         boolean b1 = Objects.equals(leftUp, room.leftUp) && Objects.equals(leftDown, room.leftDown);
-        boolean b2 = Objects.equals(rightUp, room.rightUp) && Objects.equals(rightDown, room.rightDown);
-        return b1 && b2;
+        boolean b2 = Objects.equals(rightUp, room.rightUp);
+        boolean b3 = Objects.equals(rightDown, room.rightDown);
+        return b1 && b2 && b3;
     }
 
     @Override
