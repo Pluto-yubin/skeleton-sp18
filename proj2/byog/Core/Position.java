@@ -25,12 +25,12 @@ public class Position {
         this.y = y;
     }
 
-    public Position(int x, int y, boolean close, int xDistance, int yDistance, MapGenerator.Direction direction) {
+    public Position(int x, int y, boolean close, int xd, int yd, MapGenerator.Direction direction) {
         this.x = x;
         this.y = y;
         this.close = close;
-        this.xDistance = xDistance;
-        this.yDistance = yDistance;
+        this.xDistance = xd;
+        this.yDistance = yd;
         this.direction = direction;
     }
 
@@ -44,9 +44,10 @@ public class Position {
      * @return
      */
     public static Position createHallsInRoom(Random random, Room room, int length, int height, MapGenerator.Direction firstDir, MapGenerator.Direction secondDir) {
-        Position hallway = null;
+        Position hallway;
         int rux = room.rightUp.x, ruy = room.rightUp.y, lux = room.leftUp.x, luy = room.leftUp.y;
-        int rdx = room.rightDown.x, rdy = room.rightDown.y, ldx = room.leftDown.x, ldy = room.leftDown.y;
+        int rdx = room.rightDown.x, rdy = room.rightDown.y;
+        int ldx = room.leftDown.x, ldy = room.leftDown.y;
         int xDirSign = 1, yDirSign = 1;
         if (firstDir == MapGenerator.Direction.DOWN) {
             yDirSign = -1;
@@ -90,6 +91,8 @@ public class Position {
                     yDirSign = -1;
                 }
                 break;
+            default:
+                return null;
         }
 
         int hallwayVerticalLen = RandomUtils.uniform(random, 3, 10);
