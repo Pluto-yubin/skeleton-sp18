@@ -177,32 +177,33 @@ public class MapGenerator {
      * @param start
      */
     public boolean drawLHall(TETile[][] world, Position start) {
+        int x = start.xDistance, y = start.yDistance;
         if (checkObstacleInHall(world, start)) {
             return false;
         }
         if (!Position.isVerticalDirection(start.direction)) {
-            if (start.yDistance != 0) {   // hall为L形时hall的end端得为wall
-                world[start.x + start.xDistance][start.y] = WALL;
+            if (y != 0) {   // hall为L形时hall的end端得为wall
+                world[start.x + x][start.y] = WALL;
             }
             drawHorizonHall(world, start);
-            if (start.yDistance == 0) {
+            if (y == 0) {
                 return true;
             }
-            Position ver = Position.modifyXY(start, start.xDistance + getDirOffset(start.xDistance), getDirOffset(start.yDistance));
+            Position ver = Position.modifyXY(start, start.xDistance + getDirOffset(start.xDistance), getDirOffset(y));
             drawVerticalHall(world, ver);
-            int y = start.y + start.yDistance / Math.abs(start.yDistance);
-            int x = start.x + start.xDistance + getDirOffset(start.xDistance);
-            world[x][y] = FLOOR;
+            int dy = start.y + y / Math.abs(y);
+            int dx = start.x + start.xDistance + getDirOffset(start.xDistance);
+            world[dx][dy] = FLOOR;
         } else {
             if (start.xDistance != 0) {
-                world[start.x][start.y + start.yDistance] = WALL;
+                world[start.x][start.y + y] = WALL;
             }
             drawVerticalHall(world, start);
             if (start.xDistance == 0) {
                 return true;
             }
-            drawHorizonHall(world, Position.modifyXY(start, getDirOffset(start.xDistance), getDirOffset(start.yDistance) + start.yDistance));
-            int y = start.y + start.yDistance + getDirOffset(start.yDistance);
+            drawHorizonHall(world, Position.modifyXY(start, getDirOffset(start.xDistance), getDirOffset(y) + y));
+            int y = start.y + y + getDirOffset(y);
             int x = start.x + start.xDistance / Math.abs(start.xDistance);
             world[x][y] = FLOOR;
         }
@@ -262,15 +263,14 @@ public class MapGenerator {
             return true;
         }
         Direction direction = Room.getGenerateDirection(start);
-        Position temp = null;
+        Position temp;
         if (direction != start.direction) {
+            temp = new Position(end.x + end.xDistance + 1, end.y, false, 0, end.yDistance, direction);
             if (start.direction == LEFT) {
-                temp = new Position(end.x + end.xDistance + 1, end.y, false, 0, end.yDistance, direction);
                 return checkObstacleInHall(world, temp);
             }
             temp = new Position(start.x + start.xDistance - 1, start.y, false, 0, start.yDistance, direction);
             return checkObstacleInHall(world, temp);
-
         }
         return false;
     }
