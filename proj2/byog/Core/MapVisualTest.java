@@ -15,13 +15,6 @@ public class MapVisualTest {
     static TERenderer ter = new TERenderer();
     static TETile[][] world = new TETile[80][30];
 
-    @Test
-    public void testList() {
-        Room room1 = new Room(new Position(1, 1), new Position(1, 0), new Position(2, 1), new Position(2, 0));
-        Room room2 = new Room(new Position(1, 1), new Position(1, 0), new Position(2, 1), new Position(2, 0));
-        Room.addExistRooms(room1);
-        Assert.assertTrue(Room.overlap(room2));
-    }
 
     public static void main(String[] args) {
         MapGenerator generator = new MapGenerator(world, 1234);

@@ -11,7 +11,8 @@ public class Position {
     int x;
     int y;
     boolean close;
-    // 从起点位置向x轴延伸长度，所以真实长度为xDistance + 1，这样定义是因为drawTile函数从start开始占据像素点，这里的start对应(x, y)
+    // 从起点位置向x轴延伸长度，所以真实长度为xDistance + 1
+    // 这样定义是因为drawTile函数从start开始占据像素点，这里的start对应(x, y)
     int xDistance;
     // y轴延伸长度
     int yDistance;
@@ -44,6 +45,8 @@ public class Position {
      */
     public static Position createHallsInRoom(Random random, Room room, int length, int height, MapGenerator.Direction firstDir, MapGenerator.Direction secondDir) {
         Position hallway = null;
+        int rux = room.rightUp.x, ruy = room.rightUp.y, lux = room.leftUp.x, luy = room.leftUp.y;
+        int rdx = room.rightDown.x, rdy = room.rightDown.y, ldx = room.leftDown.x, ldy = room.leftDown.y;
         int xDirSign = 1, yDirSign = 1;
         if (firstDir == MapGenerator.Direction.DOWN) {
             yDirSign = -1;
@@ -51,26 +54,26 @@ public class Position {
             xDirSign = -1;
         }
         switch (firstDir) {
-            case UP: if (room.rightUp.y >= height - 3) { return null; }
-                hallway = new Position(RandomUtils.uniform(random, room.leftUp.x + 1, room.rightUp.x - 1), room.leftUp.y);
+            case UP: if (ruy >= height - 3) { return null; }
+                hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), luy);
                 if (secondDir == MapGenerator.Direction.LEFT) {
                     xDirSign = -1;
                 }
                 break;
-            case DOWN: if (room.rightDown.y <= 2) { return null; }
-                hallway = new Position(RandomUtils.uniform(random, room.leftUp.x + 1, room.rightUp.x - 1), room.leftDown.y);
+            case DOWN: if (rdy <= 2) { return null; }
+                hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), ldy);
                 if (secondDir == MapGenerator.Direction.LEFT) {
                     xDirSign = -1;
                 }
                 break;
-            case LEFT: if (room.leftDown.x <= 2) { return null; }
-                hallway = new Position(room.leftDown.x, RandomUtils.uniform(random, room.leftDown.y + 1, room.leftUp.y - 1));
+            case LEFT: if (ldx <= 2) { return null; }
+                hallway = new Position(ldx, RandomUtils.uniform(random, ldy + 1, luy - 1));
                 if (secondDir == MapGenerator.Direction.DOWN) {
                     yDirSign = -1;
                 }
                 break;
-            case RIGHT: if (room.rightDown.x >= length - 3) { return null; }
-                hallway = new Position(room.rightDown.x, RandomUtils.uniform(random, room.rightDown.y + 1, room.rightUp.y - 1));
+            case RIGHT: if (rdx >= length - 3) { return null; }
+                hallway = new Position(rdx, RandomUtils.uniform(random, rdy + 1, ruy - 1));
                 if (secondDir == MapGenerator.Direction.DOWN) {
                     yDirSign = -1;
                 }
@@ -122,7 +125,9 @@ public class Position {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) return false;
         Position position = (Position) o;
         return x == position.x && y == position.y;
