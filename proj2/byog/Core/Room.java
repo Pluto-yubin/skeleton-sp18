@@ -69,8 +69,12 @@ public class Room {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Room room = (Room) o;
         return Objects.equals(leftUp, room.leftUp) && Objects.equals(leftDown, room.leftDown) && Objects.equals(rightUp, room.rightUp) && Objects.equals(rightDown, room.rightDown);
     }
@@ -82,7 +86,8 @@ public class Room {
 
     /**
      * 在走廊边缘创造房间
-     * 以hall为中心，分别向左边和右边延伸一个随机数作为Room的leftDown和rightDown，再随机生成一个heigth来确定leftUp和rightUp
+     * 以hall为中心，分别向左边和右边延伸一个随机数作为Room的leftDown和rightDown
+     * 再随机生成一个heigth来确定leftUp和rightUp
      * @param hall
      * @return
      */
@@ -90,6 +95,7 @@ public class Room {
         if (hall == null || hall.needClose() || hall.x < 0 || hall.y < 0) {
             return null;
         }
+        int len = world.length, height = world[0].length;
         MapGenerator.Direction direction = getGenerateDirection(hall);
         hall = Position.getHallEndPos(hall);
         Room room = new Room();
@@ -100,28 +106,30 @@ public class Room {
         switch (direction) {
             case UP:
                 room.leftDown = new Position(Math.max(hall.x - left, 0), hall.y);
-                room.leftUp = new Position(room.leftDown.x, Math.min(hall.y + up, world[0].length - 1));
-                room.rightDown = new Position(Math.min(world.length - 1, hall.x + right), room.leftDown.y);
+                room.leftUp = new Position(room.leftDown.x, Math.min(hall.y + up, height - 1));
+                room.rightDown = new Position(Math.min(len - 1, hall.x + right), room.leftDown.y);
                 room.rightUp = new Position(room.rightDown.x, room.leftUp.y);
                 break;
             case DOWN:
                 room.leftUp = new Position(Math.max(hall.x - left, 0), hall.y);
                 room.leftDown = new Position(room.leftUp.x, Math.max(hall.y - down, 0));
-                room.rightUp = new Position(Math.min(world.length - 1, hall.x + right), room.leftUp.y);
+                room.rightUp = new Position(Math.min(len - 1, hall.x + right), room.leftUp.y);
                 room.rightDown = new Position(room.rightUp.x, room.leftDown.y);
                 break;
             case LEFT:
                 room.rightDown = new Position(hall.x, Math.max(hall.y - down, 0));
-                room.rightUp = new Position(room.rightDown.x, Math.min(world[0].length - 1, hall.y + up));
+                room.rightUp = new Position(room.rightDown.x, Math.min(height - 1, hall.y + up));
                 room.leftDown = new Position(Math.max(0, hall.x - left), room.rightDown.y);
                 room.leftUp = new Position(room.leftDown.x, room.rightUp.y);
                 break;
             case RIGHT:
                 room.leftDown = new Position(hall.x, Math.max(hall.y - down, 0));
-                room.leftUp = new Position(room.leftDown.x, Math.min(world[0].length - 1, hall.y + up));
-                room.rightDown = new Position(Math.min(world.length - 1, hall.x + right), room.leftDown.y);
+                room.leftUp = new Position(room.leftDown.x, Math.min(height - 1, hall.y + up));
+                room.rightDown = new Position(Math.min(len - 1, hall.x + right), room.leftDown.y);
                 room.rightUp = new Position(room.rightDown.x, room.leftUp.y);
                 break;
+            default:
+                return null;
         }
 
         if (Room.overlap(room)) {
