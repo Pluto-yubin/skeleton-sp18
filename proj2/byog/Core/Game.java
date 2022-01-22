@@ -3,6 +3,7 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import edu.princeton.cs.algs4.In;
 
 import java.util.Random;
 
@@ -37,30 +38,9 @@ public class Game {
         // drawn if the same inputs had been given to playWithKeyboard().
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         MapGenerator mapGenerator = new MapGenerator();
-        int inputIndex = 0;
-        while (inputIndex < input.length()) {
-            char instruction = input.charAt(inputIndex);
-            if (instruction == 'n') {
-//                initWorld(finalWorldFrame);
-//                inputIndex = generateRandom(input);
-                mapGenerator.finalWorldFrame = finalWorldFrame;
-                mapGenerator.seed = 1234;
-            } else if (instruction == 'l') {
-                // TODO: Load the world saved in last game
-            } else if (instruction == ':') {
-                inputIndex += 1;
-                if (input.charAt(inputIndex) == 'q') {
-                    // TODO: Save the game
-                } else {
-                    // I don't know, maybe throw an error?
-                }
-            } else {
-                //phase 2
-            }
-            inputIndex += 1;
-        }
-
-
+        String seed = input.substring(1, input.length() - 1);
+        mapGenerator.finalWorldFrame = finalWorldFrame;
+        mapGenerator.seed = Integer.parseInt(seed);
         return mapGenerator.generateMap();
     }
 

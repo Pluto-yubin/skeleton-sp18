@@ -46,6 +46,9 @@ public class MapGenerator {
         if (finalWorldFrame == null) {
             return null;
         }
+        if (RANDOM == null) {
+            RANDOM = new Random(seed);
+        }
         // Initiate map
         for (int i = 0; i < finalWorldFrame.length; i++) {
             for (int j = 0; j < finalWorldFrame[0].length; j++) {
