@@ -91,13 +91,13 @@ public class MapGenerator {
 
     private void draw(TETile[][] world, Room room, int len, int hi, Direction right, Direction down) {
         Position hallway;
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, right);
+        hallway = Position.createHallsInRoom(RANDOM, room, world, right);
         if (drawHallway(world, hallway)) {
             Room room1 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room1, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, down);
+        hallway = Position.createHallsInRoom(RANDOM, room, world, down);
         if (drawHallway(world, hallway)) {
             Room room2 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room2, hallway);

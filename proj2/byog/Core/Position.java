@@ -1,5 +1,7 @@
 package byog.Core;
 
+import byog.TileEngine.TETile;
+
 import java.util.Objects;
 import java.util.Random;
 
@@ -57,23 +59,22 @@ public class Position {
     /**
      * @param random
      * @param room
-     * @param length
-     * @param height
-     * @param firstDir  走廊第一个方向，为上下左右中的一个
+     * @param dir  走廊第一个方向，为上下左右中的一个
      * @return
      */
-    public static Position createHallsInRoom(Random random, Room room, int length, int height, MapGenerator.Direction firstDir) {
+    public static Position createHallsInRoom(Random random, Room room, TETile[][] world,  MapGenerator.Direction dir) {
         Position hallway;
+        int height = world[0].length, length = world.length;
         int rux = room.rightUp.x, ruy = room.rightUp.y, lux = room.leftUp.x, luy = room.leftUp.y;
         int rdx = room.rightDown.x, rdy = room.rightDown.y;
         int ldx = room.leftDown.x, ldy = room.leftDown.y;
         int xDirSign = 1, yDirSign = 1;
-        if (firstDir == DOWN) {
+        if (dir == DOWN) {
             yDirSign = -1;
-        } else if (firstDir == LEFT) {
+        } else if (dir == LEFT) {
             xDirSign = -1;
         }
-        switch (firstDir) {
+        switch (dir) {
             case UP:
                 if (ruy >= height - 3) {
                     return null;
@@ -119,7 +120,7 @@ public class Position {
         int hallwayHorizonLen = RandomUtils.uniform(random, 3, 10);
         hallway.xDistance = getDistance(hallway.x, hallwayHorizonLen, length, xDirSign) * xDirSign;
         if (RandomUtils.uniform(random) < 0.5) {
-            if (isVerticalDirection(firstDir)) {
+            if (isVerticalDirection(dir)) {
                 hallway.xDistance = 0;
             } else {
                 hallway.yDistance = 0;
@@ -129,7 +130,7 @@ public class Position {
         if (x <= 2 || x >= length - 3 || y <= 2 || y >= height - 3) {
             hallway.close = true;
         }
-        hallway.direction = firstDir;
+        hallway.direction = dir;
         return hallway;
     }
 
