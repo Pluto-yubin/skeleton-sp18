@@ -189,23 +189,23 @@ public class MapGenerator {
             if (y == 0) {
                 return true;
             }
-            Position ver = Position.modifyXY(start, start.xDistance + getDirOffset(start.xDistance), getDirOffset(y));
+            Position ver = Position.modifyXY(start, x + getDirOffset(x), getDirOffset(y));
             drawVerticalHall(world, ver);
             int dy = start.y + y / Math.abs(y);
-            int dx = start.x + start.xDistance + getDirOffset(start.xDistance);
+            int dx = start.x + x + getDirOffset(x);
             world[dx][dy] = FLOOR;
         } else {
-            if (start.xDistance != 0) {
+            if (x != 0) {
                 world[start.x][start.y + y] = WALL;
             }
             drawVerticalHall(world, start);
-            if (start.xDistance == 0) {
+            if (x == 0) {
                 return true;
             }
             drawHorizonHall(world, Position.modifyXY(start, getDirOffset(start.xDistance), getDirOffset(y) + y));
-            int y = start.y + y + getDirOffset(y);
-            int x = start.x + start.xDistance / Math.abs(start.xDistance);
-            world[x][y] = FLOOR;
+            int dy = start.y + y + getDirOffset(y);
+            int dx = start.x + x / Math.abs(x);
+            world[dx][dy] = FLOOR;
         }
         return true;
     }
@@ -233,6 +233,8 @@ public class MapGenerator {
     }
 
     private boolean checkHallVertical(TETile[][] world, Position start, Position end) {
+        int sx = start.xDistance, sy = start.yDistance;
+        int ex = end.xDistance, ey = end.yDistance;
         if (checkVer(world, start, end)) {
             return true;
         } else if (checkVer(world, Position.modifyXY(start, 1, 0), Position.modifyXY(end, 1, 0))) {
@@ -243,16 +245,18 @@ public class MapGenerator {
         Direction direction = Room.getGenerateDirection(start);
         if (direction != start.direction) {
             if (start.direction == DOWN) {
-                Position temp = new Position(end.x, end.y + end.yDistance + 1, false, end.xDistance, 0, direction);
+                Position temp = new Position(end.x, end.y + ey + 1, false, ex, 0, direction);
                 return checkObstacleInHall(world, temp);
             }
-            Position temp = new Position(start.x, start.y + start.yDistance - 1, false, start.xDistance, 0, direction);
+            Position temp = new Position(start.x, start.y + sy - 1, false, sx, 0, direction);
             return checkObstacleInHall(world, temp);
         }
         return false;
     }
 
     private boolean checkHallHorizon(TETile[][] world, Position start, Position end) {
+        int sx = start.xDistance, sy = start.yDistance;
+        int ex = end.xDistance, ey = end.yDistance;
         Position upIndex = Position.modifyXY(start, 0, 1);
         Position downIndex = Position.modifyXY(start, 0, -1);
         if (checkHor(world, start, end)) {
@@ -265,11 +269,11 @@ public class MapGenerator {
         Direction direction = Room.getGenerateDirection(start);
         Position temp;
         if (direction != start.direction) {
-            temp = new Position(end.x + end.xDistance + 1, end.y, false, 0, end.yDistance, direction);
+            temp = new Position(end.x + ex + 1, end.y, false, 0, ey, direction);
             if (start.direction == LEFT) {
                 return checkObstacleInHall(world, temp);
             }
-            temp = new Position(start.x + start.xDistance - 1, start.y, false, 0, start.yDistance, direction);
+            temp = new Position(start.x + sx - 1, start.y, false, 0, sy, direction);
             return checkObstacleInHall(world, temp);
         }
         return false;
