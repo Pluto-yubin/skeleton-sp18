@@ -8,6 +8,10 @@ import java.util.Random;
  * @date 2022/1/9 17:08
  */
 public class Position {
+    private static final MapGenerator.Direction RIGHT = MapGenerator.Direction.RIGHT;
+    private static final MapGenerator.Direction LEFT = MapGenerator.Direction.LEFT;
+    private static final MapGenerator.Direction UP = MapGenerator.Direction.UP;
+    private static final MapGenerator.Direction DOWN = MapGenerator.Direction.DOWN;
     int x;
     int y;
     boolean close;
@@ -33,25 +37,40 @@ public class Position {
         this.yDistance = yd;
         this.direction = direction;
     }
+    /**
+     * get horizon direction randomly
+     * @return
+     */
+    private static MapGenerator.Direction getHorDir(Random random) {
+        if (RandomUtils.uniform(random) < 0.5) {
+            return RIGHT;
+        }
+        return LEFT;
+    }
 
+    private static MapGenerator.Direction getVelDir(Random random) {
+        if (RandomUtils.uniform(random) < 0.5) {
+            return UP;
+        }
+        return DOWN;
+    }
     /**
      * @param random
      * @param room
      * @param length
      * @param height
      * @param firstDir  走廊第一个方向，为上下左右中的一个
-     * @param secondDir
      * @return
      */
-    public static Position createHallsInRoom(Random random, Room room, int length, int height, MapGenerator.Direction firstDir, MapGenerator.Direction secondDir) {
+    public static Position createHallsInRoom(Random random, Room room, int length, int height, MapGenerator.Direction firstDir) {
         Position hallway;
         int rux = room.rightUp.x, ruy = room.rightUp.y, lux = room.leftUp.x, luy = room.leftUp.y;
         int rdx = room.rightDown.x, rdy = room.rightDown.y;
         int ldx = room.leftDown.x, ldy = room.leftDown.y;
         int xDirSign = 1, yDirSign = 1;
-        if (firstDir == MapGenerator.Direction.DOWN) {
+        if (firstDir == DOWN) {
             yDirSign = -1;
-        } else if (firstDir == MapGenerator.Direction.LEFT) {
+        } else if (firstDir == LEFT) {
             xDirSign = -1;
         }
         switch (firstDir) {
@@ -60,7 +79,7 @@ public class Position {
                     return null;
                 }
                 hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), luy);
-                if (secondDir == MapGenerator.Direction.LEFT) {
+                if (getHorDir(random) == LEFT) {
                     xDirSign = -1;
                 }
                 break;
@@ -69,7 +88,7 @@ public class Position {
                     return null;
                 }
                 hallway = new Position(RandomUtils.uniform(random, lux + 1, rux - 1), ldy);
-                if (secondDir == MapGenerator.Direction.LEFT) {
+                if (getHorDir(random) == LEFT) {
                     xDirSign = -1;
                 }
                 break;
@@ -78,7 +97,7 @@ public class Position {
                     return null;
                 }
                 hallway = new Position(ldx, RandomUtils.uniform(random, ldy + 1, luy - 1));
-                if (secondDir == MapGenerator.Direction.DOWN) {
+                if (getVelDir(random) == DOWN) {
                     yDirSign = -1;
                 }
                 break;
@@ -87,7 +106,7 @@ public class Position {
                     return null;
                 }
                 hallway = new Position(rdx, RandomUtils.uniform(random, rdy + 1, ruy - 1));
-                if (secondDir == MapGenerator.Direction.DOWN) {
+                if (getVelDir(random) == DOWN) {
                     yDirSign = -1;
                 }
                 break;
@@ -160,7 +179,7 @@ public class Position {
     }
 
     public static boolean isVerticalDirection(MapGenerator.Direction direction) {
-        return direction == MapGenerator.Direction.UP || direction == MapGenerator.Direction.DOWN;
+        return direction == UP || direction == DOWN;
     }
 
     /**

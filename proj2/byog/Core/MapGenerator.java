@@ -83,49 +83,25 @@ public class MapGenerator {
             }
             return;
         }
+        draw(world, room, len, hi, RIGHT, DOWN);
+
+        draw(world, room, len, hi, UP, LEFT);
+
+    }
+
+    private void draw(TETile[][] world, Room room, int len, int hi, Direction right, Direction down) {
         Position hallway;
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, RIGHT, getVelDir());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, right);
         if (drawHallway(world, hallway)) {
             Room room1 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room1, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, DOWN, getHorDir());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, down);
         if (drawHallway(world, hallway)) {
             Room room2 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room2, hallway);
         }
-
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, UP, getHorDir());
-        if (drawHallway(world, hallway)) {
-            Room room3 = Room.createRoom(world, hallway, RANDOM);
-            generateMapRecur(world, room3, hallway);
-        }
-
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, LEFT, getVelDir());
-        if (drawHallway(world, hallway)) {
-            Room room4 = Room.createRoom(world, hallway, RANDOM);
-            generateMapRecur(world, room4, hallway);
-        }
-
-    }
-
-    /**
-     * get horizon direction randomly
-     * @return
-     */
-    private Direction getHorDir() {
-        if (RandomUtils.uniform(RANDOM) < 0.5) {
-            return RIGHT;
-        }
-        return LEFT;
-    }
-
-    private Direction getVelDir() {
-        if (RandomUtils.uniform(RANDOM) < 0.5) {
-            return UP;
-        }
-        return DOWN;
     }
 
     /**
