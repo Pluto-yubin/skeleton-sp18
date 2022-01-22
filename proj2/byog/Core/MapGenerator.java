@@ -262,11 +262,14 @@ public class MapGenerator {
             return true;
         }
         Direction direction = Room.getGenerateDirection(start);
+        Position temp = null;
         if (direction != start.direction) {
             if (start.direction == LEFT) {
-                return checkObstacleInHall(world, new Position(end.x + end.xDistance + 1, end.y, false, 0, end.yDistance, direction));
+                temp = new Position(end.x + end.xDistance + 1, end.y, false, 0, end.yDistance, direction);
+                return checkObstacleInHall(world, temp);
             }
-            return checkObstacleInHall(world, new Position(start.x + start.xDistance - 1, start.y, false, 0, start.yDistance, direction));
+            temp = new Position(start.x + start.xDistance - 1, start.y, false, 0, start.yDistance, direction);
+            return checkObstacleInHall(world, temp);
 
         }
         return false;
