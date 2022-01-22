@@ -202,7 +202,7 @@ public class MapGenerator {
             if (x == 0) {
                 return true;
             }
-            drawHorizonHall(world, Position.modifyXY(start, getDirOffset(start.xDistance), getDirOffset(y) + y));
+            drawHorizonHall(world, Position.modifyXY(start, getDirOffset(x), getDirOffset(y) + y));
             int dy = start.y + y + getDirOffset(y);
             int dx = start.x + x / Math.abs(x);
             world[dx][dy] = FLOOR;
