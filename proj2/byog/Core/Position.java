@@ -62,7 +62,7 @@ public class Position {
      * @param dir  走廊第一个方向，为上下左右中的一个
      * @return
      */
-    public static Position createHalls(Random ran, Room room, TETile[][] w, MapGenerator.Direction dir) {
+    static Position createHalls(Random ran, Room room, TETile[][] w, MapGenerator.Direction dir) {
         Position hallway;
         int height = w[0].length, length = w.length;
         int rux = room.rightUp.x, ruy = room.rightUp.y, lux = room.leftUp.x, luy = room.leftUp.y;
