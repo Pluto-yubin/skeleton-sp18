@@ -2,10 +2,7 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
-import byog.TileEngine.Tileset;
-import edu.princeton.cs.algs4.In;
 
-import java.util.Random;
 
 public class Game {
     TERenderer ter = new TERenderer();
@@ -33,14 +30,13 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         MapGenerator mapGenerator = new MapGenerator();
         String seed = input.substring(1, input.length() - 1);
         mapGenerator.finalWorldFrame = finalWorldFrame;
-        mapGenerator.seed = Integer.parseInt(seed);
+        mapGenerator.seed = Long.parseLong(seed);
         return mapGenerator.generateMap();
     }
 

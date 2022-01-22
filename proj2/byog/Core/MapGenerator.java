@@ -16,7 +16,7 @@ public class MapGenerator {
     private static final TETile FLOOR = Tileset.FLOOR;
     private static final TETile NOTHING = Tileset.NOTHING;
     TETile[][] finalWorldFrame;
-    int seed;
+    long seed;
     private Random RANDOM;
 
     private static Direction RIGHT = Direction.RIGHT;
