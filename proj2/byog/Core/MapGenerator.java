@@ -19,6 +19,11 @@ public class MapGenerator {
     int seed;
     private Random RANDOM;
 
+    private static Direction RIGHT = Direction.RIGHT;
+    private static Direction LEFT = Direction.LEFT;
+    private static Direction UP = Direction.UP;
+    private static Direction DOWN = Direction.DOWN;
+
     public MapGenerator(TETile[][] finalWorldFrame, int seed) {
         this.finalWorldFrame = finalWorldFrame;
         RANDOM = new Random(seed);
@@ -33,7 +38,7 @@ public class MapGenerator {
      * @param x
      * @return
      */
-    private static int getDirectionOffset(int x) {
+    private static int getDirOffset(int x) {
         return x >= 0 ? -1 : 1;
     }
 
@@ -79,25 +84,25 @@ public class MapGenerator {
             return;
         }
         Position hallway;
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.RIGHT, getVelDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, RIGHT, getVelDir());
         if (drawHallway(world, hallway)) {
             Room room1 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room1, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.DOWN, getHorDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, DOWN, getHorDir());
         if (drawHallway(world, hallway)) {
             Room room2 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room2, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.UP, getHorDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, UP, getHorDir());
         if (drawHallway(world, hallway)) {
             Room room3 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room3, hallway);
         }
 
-        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, Direction.LEFT, getVelDirRandomly());
+        hallway = Position.createHallsInRoom(RANDOM, room, len, hi, LEFT, getVelDir());
         if (drawHallway(world, hallway)) {
             Room room4 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room4, hallway);
@@ -109,18 +114,18 @@ public class MapGenerator {
      * get horizon direction randomly
      * @return
      */
-    private Direction getHorDirRandomly() {
+    private Direction getHorDir() {
         if (RandomUtils.uniform(RANDOM) < 0.5) {
-            return Direction.RIGHT;
+            return RIGHT;
         }
-        return Direction.LEFT;
+        return LEFT;
     }
 
-    private Direction getVelDirRandomly() {
+    private Direction getVelDir() {
         if (RandomUtils.uniform(RANDOM) < 0.5) {
-            return Direction.UP;
+            return UP;
         }
-        return Direction.DOWN;
+        return DOWN;
     }
 
     /**
@@ -183,11 +188,10 @@ public class MapGenerator {
             if (start.yDistance == 0) {
                 return true;
             }
-
-            drawVerticalHall(world, Position.modifyXY(start, start.xDistance + getDirectionOffset(start.xDistance),
-                    getDirectionOffset(start.yDistance)));
+            Position ver = Position.modifyXY(start, start.xDistance + getDirOffset(start.xDistance), getDirOffset(start.yDistance));
+            drawVerticalHall(world, ver);
             int y = start.y + start.yDistance / Math.abs(start.yDistance);
-            int x = start.x + start.xDistance + getDirectionOffset(start.xDistance);
+            int x = start.x + start.xDistance + getDirOffset(start.xDistance);
             world[x][y] = FLOOR;
         } else {
             if (start.xDistance != 0) {
@@ -197,9 +201,8 @@ public class MapGenerator {
             if (start.xDistance == 0) {
                 return true;
             }
-            drawHorizonHall(world, Position.modifyXY(start, getDirectionOffset(start.xDistance),
-                    getDirectionOffset(start.yDistance) + start.yDistance));
-            int y = start.y + start.yDistance + getDirectionOffset(start.yDistance);
+            drawHorizonHall(world, Position.modifyXY(start, getDirOffset(start.xDistance), getDirOffset(start.yDistance) + start.yDistance));
+            int y = start.y + start.yDistance + getDirOffset(start.yDistance);
             int x = start.x + start.xDistance / Math.abs(start.xDistance);
             world[x][y] = FLOOR;
         }
@@ -238,7 +241,7 @@ public class MapGenerator {
         }
         Direction direction = Room.getGenerateDirection(start);
         if (direction != start.direction) {
-            if (start.direction == Direction.DOWN) {
+            if (start.direction == DOWN) {
                 Position temp = new Position(end.x, end.y + end.yDistance + 1, false, end.xDistance, 0, direction);
                 return checkObstacleInHall(world, temp);
             }
@@ -249,16 +252,18 @@ public class MapGenerator {
     }
 
     private boolean checkHallHorizon(TETile[][] world, Position start, Position end) {
+        Position upIndex = Position.modifyXY(start, 0, 1);
+        Position downIndex = Position.modifyXY(start, 0, -1);
         if (checkHor(world, start, end)) {
             return true;
-        } else if (checkHor(world, Position.modifyXY(start, 0, -1), Position.modifyXY(end, 0, -1))) {
+        } else if (checkHor(world, downIndex, downIndex)) {
             return true;
-        } else if (checkHor(world, Position.modifyXY(start, 0, 1), Position.modifyXY(end, 0, 1))) {
+        } else if (checkHor(world, upIndex, upIndex)) {
             return true;
         }
         Direction direction = Room.getGenerateDirection(start);
         if (direction != start.direction) {
-            if (start.direction == Direction.LEFT) {
+            if (start.direction == LEFT) {
                 return checkObstacleInHall(world, new Position(end.x + end.xDistance + 1, end.y, false, 0, end.yDistance, direction));
             }
             return checkObstacleInHall(world, new Position(start.x + start.xDistance - 1, start.y, false, 0, start.yDistance, direction));
