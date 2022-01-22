@@ -13,7 +13,7 @@ import org.junit.Test;
 public class MapVisualTest {
     MapGenerator generator = new MapGenerator();
     static TERenderer ter = new TERenderer();
-    static TETile[][] world = new TETile[50][50];
+    static TETile[][] world = new TETile[80][30];
 
     @Test
     public void testList() {
@@ -24,7 +24,7 @@ public class MapVisualTest {
     }
 
     public static void main(String[] args) {
-        MapGenerator generator = new MapGenerator(world, 4321);
+        MapGenerator generator = new MapGenerator(world, 1234);
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {
                 world[i][j] = Tileset.NOTHING;
