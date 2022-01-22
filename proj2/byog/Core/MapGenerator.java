@@ -237,9 +237,11 @@ public class MapGenerator {
         int ex = end.xDistance, ey = end.yDistance;
         if (checkVer(world, start, end)) {
             return true;
-        } else if (checkVer(world, Position.modifyXY(start, 1, 0), Position.modifyXY(end, 1, 0))) {
+        }
+        if (checkVer(world, Position.modifyXY(start, 1, 0), Position.modifyXY(end, 1, 0))) {
             return true;
-        } else if (checkVer(world, Position.modifyXY(start, -1, 0), Position.modifyXY(end, -1, 0))) {
+        }
+        if (checkVer(world, Position.modifyXY(start, -1, 0), Position.modifyXY(end, -1, 0))) {
             return true;
         }
         Direction direction = Room.getGenerateDirection(start);
