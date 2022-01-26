@@ -24,11 +24,6 @@ public class MapGenerator {
     private static Direction UP = Direction.UP;
     private static Direction DOWN = Direction.DOWN;
 
-    public MapGenerator(TETile[][] finalWorldFrame, long seed) {
-        this.finalWorldFrame = finalWorldFrame;
-        RANDOM = new Random(seed);
-    }
-
     public MapGenerator() {
     }
 
@@ -83,31 +78,23 @@ public class MapGenerator {
             }
             return;
         }
-        draw(world, room, RIGHT, DOWN);
-
-        draw(world, room, UP, LEFT);
-
+        draw(world, room, RIGHT);
+        draw(world, room, UP);
+        draw(world, room, DOWN);
+        draw(world, room, LEFT);
     }
 
     /**
-     * extract by idea, amazing
      * @param world
      * @param room
-     * @param right
-     * @param down
+     * @param dir
      */
-    private void draw(TETile[][] world, Room room, Direction right, Direction down) {
+    private void draw(TETile[][] world, Room room, Direction dir) {
         Position hallway;
-        hallway = Position.createHalls(RANDOM, room, world, right);
+        hallway = Position.createHalls(RANDOM, room, world, dir);
         if (drawHallway(world, hallway)) {
             Room room1 = Room.createRoom(world, hallway, RANDOM);
             generateMapRecur(world, room1, hallway);
-        }
-
-        hallway = Position.createHalls(RANDOM, room, world, down);
-        if (drawHallway(world, hallway)) {
-            Room room2 = Room.createRoom(world, hallway, RANDOM);
-            generateMapRecur(world, room2, hallway);
         }
     }
 
@@ -155,7 +142,7 @@ public class MapGenerator {
     }
 
     /**
-     * draw L style hallway
+     * draw L shape hallway
      * @param world
      * @param start
      */
@@ -165,11 +152,10 @@ public class MapGenerator {
             return false;
         }
         if (!Position.isVerticalDirection(start.direction)) {
+            drawHorizonHall(world, start);
             if (y != 0) {   // hall为L形时hall的end端得为wall
                 world[start.x + x][start.y] = WALL;
-            }
-            drawHorizonHall(world, start);
-            if (y == 0) {
+            } else {
                 return true;
             }
             Position ver = Position.modifyXY(start, x + getDirOffset(x), getDirOffset(y));
@@ -178,11 +164,10 @@ public class MapGenerator {
             int dx = start.x + x + getDirOffset(x);
             world[dx][dy] = FLOOR;
         } else {
+            drawVerticalHall(world, start);
             if (x != 0) {
                 world[start.x][start.y + y] = WALL;
-            }
-            drawVerticalHall(world, start);
-            if (x == 0) {
+            } else {
                 return true;
             }
             drawHorizonHall(world, Position.modifyXY(start, getDirOffset(x), getDirOffset(y) + y));
@@ -194,7 +179,7 @@ public class MapGenerator {
     }
 
     /**
-     * Return true if there are some obstacles in the way of hallway
+     * Return true if there are some obstacles in the trace of hallway
      * @param world
      * @param start
      * @return
@@ -323,8 +308,6 @@ public class MapGenerator {
     }
 
     public boolean drawRoom(TETile[][] world, Room room) {
-        // delete room.leftDown.x < 0 || room.rightUp.x >= world.length
-        // || room.leftDown.y < 0 || room.rightUp.y > world[0].length
         if (room == null) {
             return false;
         }
