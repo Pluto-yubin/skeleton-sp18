@@ -3,7 +3,9 @@ package byog.lab5;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import edu.princeton.cs.introcs.StdDraw;
 
+import java.awt.*;
 import java.util.Random;
 
 
@@ -97,13 +99,26 @@ public class HexWorld {
     }
 
     public static void main(String[] args) {
+        StdDraw.enableDoubleBuffering();
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] hexTiles = new TETile[WIDTH][HEIGHT];
         addHexagon(hexTiles, SIDE_LENGTH);
         hexTiles[0][0] = Tileset.FLOWER;
-        hexTiles[29][0] = Tileset.FLOWER;
+//        hexTiles[29][0] = Tileset.FLOWER;
         ter.renderFrame(hexTiles);
-        System.out.println(hexTiles.length);
+        while (true) {
+            if (StdDraw.isMousePressed()) {
+                int x = (int) StdDraw.mouseX();
+                int y = (int) StdDraw.mouseY();
+                if (hexTiles[x][y] == Tileset.NOTHING) {
+                    Font smallFont = new Font("arial", Font.PLAIN, 20);
+                    StdDraw.setFont(smallFont);
+                    StdDraw.setPenColor(Color.WHITE);
+                    StdDraw.textLeft(0, HEIGHT - 1, "There is Nothing");
+                    StdDraw.show();
+                }
+            }
+        }
     }
 }

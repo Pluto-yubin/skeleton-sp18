@@ -61,6 +61,12 @@ public class MapGenerator {
                 new Position(roomLength + random, random)
         );
         generateMapRecur(finalWorldFrame, room, null);
+        TETile tile = finalWorldFrame[room.rightUp.x][room.rightDown.y];
+        if (tile == Tileset.WALL) {
+            finalWorldFrame[room.rightUp.x][room.rightDown.y] = Tileset.LOCKED_DOOR;
+            finalWorldFrame[room.rightUp.x][room.rightDown.y + 1] = Tileset.PLAYER;
+            Game.player = new Player(room.rightUp.x, room.rightDown.y + 1, finalWorldFrame);
+        }
         return finalWorldFrame;
     }
 
