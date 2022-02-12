@@ -12,7 +12,7 @@ public class TestGame {
     @Test
     public void testMapGenerator() {
         MapGenerator mapGenerator = new MapGenerator();
-        mapGenerator.finalWorldFrame = new TETile[1][1];
-        Assert.assertNotNull(mapGenerator.generateMap());
+        TETile[][] world = new TETile[1][1];
+        Assert.assertNotNull(mapGenerator.generateMap(world));
     }
 }

@@ -3,19 +3,15 @@ package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * @auther Zhang Yubin
  * @date 2022/1/9 17:02
  */
-public class MapGenerator {
-    // Define the picture of the wall
-    private static final TETile WALL = Tileset.WALL;
-    // Define the picture of the floor
-    private static final TETile FLOOR = Tileset.FLOOR;
-    private static final TETile NOTHING = Tileset.NOTHING;
-    TETile[][] finalWorldFrame;
+public class MapGenerator implements Serializable {
+    public Player player;
     long seed;
     private Random RANDOM;
 
@@ -37,21 +33,21 @@ public class MapGenerator {
         return x >= 0 ? -1 : 1;
     }
 
-    public TETile[][] generateMap() {
-        if (finalWorldFrame == null) {
+    public TETile[][] generateMap(TETile[][] world) {
+        if (world == null) {
             return null;
         }
         RANDOM = new Random(seed);
         // Initiate map
-        for (int i = 0; i < finalWorldFrame.length; i++) {
-            for (int j = 0; j < finalWorldFrame[0].length; j++) {
-                finalWorldFrame[i][j] = Tileset.NOTHING;
+        for (int i = 0; i < world.length; i++) {
+            for (int j = 0; j < world[0].length; j++) {
+                world[i][j] = Tileset.NOTHING;
             }
         }
 
         int roomLength = RandomUtils.uniform(RANDOM, 3, 10);
         int roomHeight = RandomUtils.uniform(RANDOM, 3, 10);
-        int min = Math.min(finalWorldFrame.length, finalWorldFrame[0].length);
+        int min = Math.min(world.length, world[0].length);
         int max = Math.max(roomLength, roomHeight);
         int random = RandomUtils.uniform(RANDOM, 0, min - max);
         Room room = new Room(
@@ -60,14 +56,16 @@ public class MapGenerator {
                 new Position(roomLength + random, roomHeight + random),
                 new Position(roomLength + random, random)
         );
-        generateMapRecur(finalWorldFrame, room, null);
-        TETile tile = finalWorldFrame[room.rightUp.x][room.rightDown.y];
+        generateMapRecur(world, room, null);
+        TETile tile = world[room.rightUp.x][room.rightDown.y];
         if (tile == Tileset.WALL) {
-            finalWorldFrame[room.rightUp.x][room.rightDown.y] = Tileset.LOCKED_DOOR;
-            finalWorldFrame[room.rightUp.x][room.rightDown.y + 1] = Tileset.PLAYER;
-            Game.player = new Player(room.rightUp.x, room.rightDown.y + 1, finalWorldFrame);
+            world[room.rightUp.x][room.rightDown.y] = Tileset.LOCKED_DOOR;
+            world[room.rightUp.x][room.rightDown.y + 1] = Tileset.PLAYER;
+            if (player == null) {
+                player = new Player(room.rightUp.x, room.rightDown.y + 1);
+            }
         }
-        return finalWorldFrame;
+        return world;
     }
 
     /**
@@ -77,10 +75,10 @@ public class MapGenerator {
      * @param hall
      */
     private void generateMapRecur(TETile[][] world, Room room, Position hall) {
-        if (!drawRoom(finalWorldFrame, room)) {
+        if (!drawRoom(world, room)) {
             if (hall != null) {
                 Position temp = Position.getHallEndPos(hall);
-                world[temp.x][temp.y] = WALL;
+                world[temp.x][temp.y] = Tileset.WALL;
             }
             return;
         }
@@ -115,7 +113,7 @@ public class MapGenerator {
         }
         boolean res = drawLHall(world, hallway);
         if (res) {
-            world[hallway.x][hallway.y] = FLOOR;
+            world[hallway.x][hallway.y] = Tileset.FLOOR;
         }
         return res;
     }
@@ -136,12 +134,12 @@ public class MapGenerator {
         int left = Math.min(start.x, end.x), right = Math.max(start.x, end.x);
         int up = Math.max(start.y, end.y), down = Math.min(start.y, end.y);
         for (int i = Math.max(left, 0); i <= Math.min(right, len) && up == down; i++) {
-            if (world[i][up] == NOTHING) {
+            if (world[i][up] == Tileset.NOTHING) {
                 world[i][up] = tileType;
             }
         }
         for (int i = Math.max(down, 0); i <= Math.min(up, height - 1) && left == right; i++) {
-            if (world[left][i] == NOTHING) {
+            if (world[left][i] == Tileset.NOTHING) {
                 world[left][i] = tileType;
             }
         }
@@ -160,7 +158,7 @@ public class MapGenerator {
         if (!Position.isVerticalDirection(start.direction)) {
             drawHorizonHall(world, start);
             if (y != 0) {   // hall为L形时hall的end端得为wall
-                world[start.x + x][start.y] = WALL;
+                world[start.x + x][start.y] = Tileset.WALL;
             } else {
                 return true;
             }
@@ -168,18 +166,18 @@ public class MapGenerator {
             drawVerticalHall(world, ver);
             int dy = start.y + y / Math.abs(y);
             int dx = start.x + x + getDirOffset(x);
-            world[dx][dy] = FLOOR;
+            world[dx][dy] = Tileset.FLOOR;
         } else {
             drawVerticalHall(world, start);
             if (x != 0) {
-                world[start.x][start.y + y] = WALL;
+                world[start.x][start.y + y] = Tileset.WALL;
             } else {
                 return true;
             }
             drawHorizonHall(world, Position.modifyXY(start, getDirOffset(x), getDirOffset(y) + y));
             int dy = start.y + y + getDirOffset(y);
             int dx = start.x + x / Math.abs(x);
-            world[dx][dy] = FLOOR;
+            world[dx][dy] = Tileset.FLOOR;
         }
         return true;
     }
@@ -258,7 +256,7 @@ public class MapGenerator {
     private boolean checkHor(TETile[][] world, Position start, Position end) {
         int count = 0;
         for (int i = Math.max(0, start.x); i < Math.min(world.length - 1, end.x); i++) {
-            if (world[i][start.y] != NOTHING) {
+            if (world[i][start.y] != Tileset.NOTHING) {
                 count += 1;
             }
         }
@@ -268,7 +266,7 @@ public class MapGenerator {
     private boolean checkVer(TETile[][] world, Position start, Position end) {
         int count = 0;
         for (int i = Math.max(start.y, 0); i < Math.min(world[0].length - 1, end.y); i++) {
-            if (world[start.x][i] != NOTHING) {
+            if (world[start.x][i] != Tileset.NOTHING) {
                 count += 1;
             }
         }
@@ -277,41 +275,24 @@ public class MapGenerator {
 
     private void drawHorizonHall(TETile[][] world, Position start) {
         Position end = new Position(start.x + start.xDistance, start.y);
-        drawTile(world, start, end, FLOOR);
-        drawTile(world, new Position(start.x, start.y - 1), new Position(end.x, end.y - 1), WALL);
-        drawTile(world, new Position(start.x, start.y + 1), new Position(end.x, end.y + 1), WALL);
+        drawTile(world, start, end, Tileset.FLOOR);
+        drawTile(world, new Position(start.x, start.y - 1), new Position(end.x, end.y - 1), Tileset.WALL);
+        drawTile(world, new Position(start.x, start.y + 1), new Position(end.x, end.y + 1), Tileset.WALL);
         if (start.needClose()) {
-            world[end.x][end.y] = WALL;
+            world[end.x][end.y] = Tileset.WALL;
         }
     }
 
     private void drawVerticalHall(TETile[][] world, Position start) {
         Position end = new Position(start.x, start.y + start.yDistance);
-        drawTile(world, start, end, FLOOR);
-        drawTile(world, new Position(start.x - 1, start.y), new Position(end.x - 1, end.y), WALL);
-        drawTile(world, new Position(start.x + 1, start.y), new Position(end.x + 1, end.y), WALL);
+        drawTile(world, start, end, Tileset.FLOOR);
+        drawTile(world, new Position(start.x - 1, start.y), new Position(end.x - 1, end.y), Tileset.WALL);
+        drawTile(world, new Position(start.x + 1, start.y), new Position(end.x + 1, end.y), Tileset.WALL);
         if (start.needClose()) {
-            world[end.x][end.y] = WALL;
+            world[end.x][end.y] = Tileset.WALL;
         }
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = finalWorldFrame.length - 1; i >= 0; i--) {
-            for (int j = 0; j < finalWorldFrame[0].length; j++) {
-                if (finalWorldFrame[i][j].equals(Tileset.NOTHING)) {
-                    sb.append(' ');
-                } else if (finalWorldFrame[i][j].equals(Tileset.FLOOR)) {
-                    sb.append('.');
-                } else if (finalWorldFrame[i][j].equals(Tileset.WALL)) {
-                    sb.append('#');
-                }
-            }
-            sb.append('\n');
-        }
-        return sb.toString();
-    }
 
     public boolean drawRoom(TETile[][] world, Room room) {
         if (room == null) {
@@ -321,14 +302,14 @@ public class MapGenerator {
             return false;
         }
         // Draw the Wall
-        drawTile(world, room.leftDown, room.leftUp, WALL);
-        drawTile(world, room.rightDown, room.rightUp, WALL);
-        drawTile(world, room.leftDown, room.rightDown, WALL);
-        drawTile(world, room.leftUp, room.rightUp, WALL);
+        drawTile(world, room.leftDown, room.leftUp, Tileset.WALL);
+        drawTile(world, room.rightDown, room.rightUp, Tileset.WALL);
+        drawTile(world, room.leftDown, room.rightDown, Tileset.WALL);
+        drawTile(world, room.leftUp, room.rightUp, Tileset.WALL);
         // Draw the floor
         int temp1 = room.leftDown.y, temp2 = room.rightDown.y;
         while (room.leftDown.y < room.rightUp.y) {
-            drawTile(world, room.leftDown, room.rightDown, FLOOR);
+            drawTile(world, room.leftDown, room.rightDown, Tileset.FLOOR);
             room.leftDown.y += 1;
             room.rightDown.y += 1;
         }
@@ -342,12 +323,29 @@ public class MapGenerator {
         int count = 0;
         for (int i = room.leftDown.x; i < room.rightDown.x; i++) {
             for (int j = room.leftDown.y; j < room.leftUp.y; j++) {
-                if (world[i][j] != NOTHING) {
+                if (world[i][j] != Tileset.NOTHING) {
                     count += 1;
                 }
             }
         }
         return count > 3;
+    }
+
+    public void controlPlayer(TETile[][] world,char step) {
+        step = Character.toLowerCase(step);
+        switch (step) {
+            case 'w':
+                player.move(world, MapGenerator.Direction.UP);
+                break;
+            case 's':
+                player.move(world, MapGenerator.Direction.DOWN);
+                break;
+            case 'a':
+                player.move(world, MapGenerator.Direction.LEFT);
+                break;
+            case 'd':
+                player.move(world, MapGenerator.Direction.RIGHT);
+        }
     }
 
     enum Direction {

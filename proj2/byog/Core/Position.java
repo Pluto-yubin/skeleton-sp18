@@ -2,6 +2,7 @@ package byog.Core;
 
 import byog.TileEngine.TETile;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
 
@@ -9,7 +10,7 @@ import java.util.Random;
  * @auther Zhang Yubin
  * @date 2022/1/9 17:08
  */
-public class Position {
+public class Position implements Serializable {
     private static final MapGenerator.Direction RIGHT = MapGenerator.Direction.RIGHT;
     private static final MapGenerator.Direction LEFT = MapGenerator.Direction.LEFT;
     private static final MapGenerator.Direction UP = MapGenerator.Direction.UP;

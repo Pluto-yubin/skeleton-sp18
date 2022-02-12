@@ -4,15 +4,14 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
+import java.io.*;
 
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    public static Player player;
     private static boolean gameOver = false;
-    private static int index = 0;
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
@@ -35,33 +34,43 @@ public class Game {
         // N543SWWWWAA
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
+        int index = 0;
+        MapGenerator mapGenerator = new MapGenerator();
+        TETile[][] world = new TETile[WIDTH][HEIGHT];
+        ter.initialize(WIDTH, HEIGHT);
         if (input.charAt(index) == 'Q' || input.charAt(index) == 'q') {
             return null;
         }
         if (input.charAt(index) == 'L' || input.charAt(index) == 'l') {
             // reload the game
+            mapGenerator = loadMap();
+            if (mapGenerator == null) {
+                return null;
+            }
+            world = mapGenerator.generateMap(world);
         } else if (input.charAt(index) == 'N' || input.charAt(index) == 'n') {
             index += 1;
+            while (input.charAt(index) >= '0' && input.charAt(index) <= '9') {
+                index += 1;
+            }
+            String seed = input.substring(1, index - 1);
+            mapGenerator.seed = Long.parseLong(seed);
+            world = mapGenerator.generateMap(world);
+            if (mapGenerator.player == null) {
+                throw new RuntimeException("Player initiated fail");
+            }
+            FrameDrawer.drawFrontCover(world);
         }
-        while (input.charAt(index) >= ' ' && input.charAt(index) <= '9') {
-            index += 1;
-        }
-        TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
-        MapGenerator mapGenerator = new MapGenerator();
-        String seed = input.substring(1, index - 1);
-        mapGenerator.finalWorldFrame = finalWorldFrame;
-        mapGenerator.seed = Long.parseLong(seed);
-        TETile[][] world = mapGenerator.generateMap();
-        if (player == null) {
-            throw new RuntimeException("Player initiated fail");
-        }
-        ter.initialize(WIDTH, HEIGHT);
-        FrameDrawer.drawFrontCover(world);
         while (!gameOver && index < input.length()) {
             ter.renderFrame(world);
             StdDraw.pause(100);
             char step = input.charAt(index);
-            controlPlayer(world, step);
+            if (Character.toLowerCase(input.charAt(index)) == 'q') {
+                break;
+            } else if (Character.toLowerCase(input.charAt(index)) == 'l') {
+                saveGame(mapGenerator);
+            }
+            mapGenerator.controlPlayer(world, step);
             index += 1;
             if (StdDraw.isMousePressed()) {
                 int x = (int) StdDraw.mouseX();
@@ -69,24 +78,44 @@ public class Game {
                 Position click = new Position(x, y);
                 FrameDrawer.drawInfo(world, click, ter);
             }
+            if (index < input.length() && input.charAt(index) == ':') {
+                index += 1;
+            }
         }
         return world;
     }
 
-    public void controlPlayer(TETile[][] world,char step) {
-        step = Character.toLowerCase(step);
-        switch (step) {
-            case 'w':
-                Game.player.move(world, MapGenerator.Direction.UP);
-                break;
-            case 's':
-                Game.player.move(world, MapGenerator.Direction.DOWN);
-                break;
-            case 'a':
-                Game.player.move(world, MapGenerator.Direction.LEFT);
-                break;
-            case 'd':
-                Game.player.move(world, MapGenerator.Direction.RIGHT);
+    private MapGenerator loadMap() {
+        File f = new File("./mapGenerator.ser");
+        if (f.exists()) {
+            try {
+                FileInputStream fs = new FileInputStream(f);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                MapGenerator mapGenerator = (MapGenerator) os.readObject();
+                os.close();
+                return mapGenerator;
+            } catch (FileNotFoundException | ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public void saveGame(MapGenerator mapGenerator) {
+
+        File f = new File("./mapGenerator.ser");
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            FileOutputStream fs = new FileOutputStream(f);
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(mapGenerator);
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
