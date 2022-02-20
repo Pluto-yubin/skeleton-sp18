@@ -6,6 +6,7 @@ import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Font;
+import java.awt.Color;
 
 /**
  * @auther Zhang Yubin

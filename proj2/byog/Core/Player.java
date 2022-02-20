@@ -71,6 +71,8 @@ public class Player implements Serializable {
                 if (isFloor(nextD(world))) {
                     position.x += 1;
                 }
+            default:
+                return;
         }
         world[position.x][position.y] = Tileset.PLAYER;
     }
