@@ -347,6 +347,7 @@ public class MapGenerator implements Serializable {
                 break;
             case 'd':
                 player.move(world, MapGenerator.Direction.RIGHT);
+                break;
             default:
                 return;
         }
