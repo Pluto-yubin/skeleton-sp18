@@ -11,7 +11,7 @@ import java.util.Random;
  * @date 2022/1/9 17:02
  */
 public class MapGenerator implements Serializable {
-    public Player player;
+    Player player;
     long seed;
     private Random RANDOM;
 
@@ -285,10 +285,11 @@ public class MapGenerator implements Serializable {
     }
 
     private void drawVerticalHall(TETile[][] world, Position start) {
+        int x = start.x, y = start.y;
         Position end = new Position(start.x, start.y + start.yDistance);
         drawTile(world, start, end, Tileset.FLOOR);
-        drawTile(world, new Position(start.x - 1, start.y), new Position(end.x - 1, end.y), Tileset.WALL);
-        drawTile(world, new Position(start.x + 1, start.y), new Position(end.x + 1, end.y), Tileset.WALL);
+        drawTile(world, new Position(x - 1, y), new Position(end.x - 1, end.y), Tileset.WALL);
+        drawTile(world, new Position(x + 1, y), new Position(end.x + 1, end.y), Tileset.WALL);
         if (start.needClose()) {
             world[end.x][end.y] = Tileset.WALL;
         }
@@ -347,6 +348,7 @@ public class MapGenerator implements Serializable {
             case 'd':
                 player.move(world, MapGenerator.Direction.RIGHT);
             default:
+                return;
         }
     }
 
