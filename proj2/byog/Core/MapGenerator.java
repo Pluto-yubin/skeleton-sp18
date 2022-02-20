@@ -60,10 +60,10 @@ public class MapGenerator implements Serializable {
         TETile tile = world[room.rightUp.x][room.rightDown.y];
         if (tile == Tileset.WALL) {
             world[room.rightUp.x][room.rightDown.y] = Tileset.LOCKED_DOOR;
-            world[room.rightUp.x][room.rightDown.y + 1] = Tileset.PLAYER;
             if (player == null) {
                 player = new Player(room.rightUp.x, room.rightDown.y + 1);
             }
+            world[player.getX()][player.getY()] = Tileset.PLAYER;
         }
         return world;
     }
@@ -274,10 +274,11 @@ public class MapGenerator implements Serializable {
     }
 
     private void drawHorizonHall(TETile[][] world, Position start) {
+        int x = start.x, y = start.y;
         Position end = new Position(start.x + start.xDistance, start.y);
         drawTile(world, start, end, Tileset.FLOOR);
-        drawTile(world, new Position(start.x, start.y - 1), new Position(end.x, end.y - 1), Tileset.WALL);
-        drawTile(world, new Position(start.x, start.y + 1), new Position(end.x, end.y + 1), Tileset.WALL);
+        drawTile(world, new Position(x, y - 1), new Position(end.x, end.y - 1), Tileset.WALL);
+        drawTile(world, new Position(x, y + 1), new Position(end.x, end.y + 1), Tileset.WALL);
         if (start.needClose()) {
             world[end.x][end.y] = Tileset.WALL;
         }
@@ -331,7 +332,7 @@ public class MapGenerator implements Serializable {
         return count > 3;
     }
 
-    public void controlPlayer(TETile[][] world,char step) {
+    public void controlPlayer(TETile[][] world, char step) {
         step = Character.toLowerCase(step);
         switch (step) {
             case 'w':
@@ -345,6 +346,7 @@ public class MapGenerator implements Serializable {
                 break;
             case 'd':
                 player.move(world, MapGenerator.Direction.RIGHT);
+            default:
         }
     }
 

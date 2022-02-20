@@ -36,10 +36,7 @@ public class FrameDrawer {
     public static void drawFrontCover(TETile[][] world) {
         int midX = world.length / 2;
         double midY = world[0].length * 0.75;
-        StdDraw.clear(Color.BLACK);
-        Font font = new Font("Arial", Font.PLAIN, 32);
-        StdDraw.setFont(font);
-        StdDraw.setPenColor(Color.WHITE);
+        initDrawer();
         StdDraw.text(midX, midY, "CS61B: THE GAME");
         Font font1 = new Font("Arial", Font.PLAIN, 16);
         StdDraw.setFont(font1);
@@ -48,7 +45,22 @@ public class FrameDrawer {
         StdDraw.text(midX, midY - 1, "Load Game (L)");
         StdDraw.text(midX, midY - 2, "Quit (Q)");
         StdDraw.show();
-        StdDraw.pause(1000);
+    }
+
+    public static void drawText(TETile[][] world, String text) {
+        initDrawer();
+        int midX = world.length / 2;
+        double midY = world[0].length * 0.75;
+        StdDraw.text(midX, midY, "Seed: " + text);
+        StdDraw.text(midX, midY / 2, "Press any direction button to start the game");
+        StdDraw.show();
+    }
+
+    private static void initDrawer() {
+        StdDraw.clear(Color.BLACK);
+        Font font = new Font("Arial", Font.PLAIN, 32);
+        StdDraw.setFont(font);
+        StdDraw.setPenColor(Color.WHITE);
     }
 
 }

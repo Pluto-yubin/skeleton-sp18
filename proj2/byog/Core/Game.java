@@ -4,6 +4,7 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
+import java.awt.*;
 import java.io.*;
 
 public class Game {
@@ -16,6 +17,64 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        MapGenerator mapGenerator = new MapGenerator();
+        TETile[][] world = new TETile[WIDTH][HEIGHT];
+        ter.initialize(WIDTH, HEIGHT);
+        FrameDrawer.drawFrontCover(world);
+        while (true) {
+            while (!StdDraw.hasNextKeyTyped()) {
+                if (StdDraw.isMousePressed()) {
+                    int x = (int) StdDraw.mouseX();
+                    int y = (int) StdDraw.mouseY();
+                    Position click = new Position(x, y);
+                    FrameDrawer.drawInfo(world, click, ter);
+                }
+                continue;
+            }
+            char input = StdDraw.nextKeyTyped();
+            input = Character.toLowerCase(input);
+            if (input == 'l') {
+                mapGenerator = loadMap();
+                if (mapGenerator == null) {
+                    return;
+                }
+                world = mapGenerator.generateMap(world);
+            } else if (input == 'n') {
+                String seed = "";
+                FrameDrawer.drawText(world, seed);
+                while (!StdDraw.hasNextKeyTyped()) {
+                    continue;
+                }
+                input = StdDraw.nextKeyTyped();
+                while (input >= '0' && input <= '9') {
+                    seed += input;
+                    System.out.println(seed);
+                    FrameDrawer.drawText(world, seed);
+                    while (!StdDraw.hasNextKeyTyped()) {
+                        continue;
+                    }
+                    input = StdDraw.nextKeyTyped();
+                }
+                mapGenerator.seed = Long.parseLong(seed);
+                world = mapGenerator.generateMap(world);
+                if (mapGenerator.player == null) {
+                    throw new RuntimeException("Player initiated fail");
+                }
+            }
+            Font font = new Font("Monaco", Font.BOLD, 16 - 2);
+            StdDraw.setFont(font);
+            mapGenerator.controlPlayer(world, input);
+            ter.renderFrame(world);
+            if (input == ':') {
+                input = StdDraw.nextKeyTyped();
+                if (input == 'q') {
+                    return;
+                } else if (input == 'l') {
+                    saveGame(mapGenerator);
+                    return;
+                }
+            }
+        }
     }
 
     /**
@@ -60,6 +119,7 @@ public class Game {
                 throw new RuntimeException("Player initiated fail");
             }
             FrameDrawer.drawFrontCover(world);
+            StdDraw.pause(1000);
         }
         while (!gameOver && index < input.length()) {
             ter.renderFrame(world);
@@ -82,6 +142,7 @@ public class Game {
                 index += 1;
             }
         }
+        StdDraw.pause(10000);
         return world;
     }
 
