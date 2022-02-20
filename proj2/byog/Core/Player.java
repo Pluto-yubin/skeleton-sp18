@@ -71,6 +71,7 @@ public class Player implements Serializable {
                 if (isFloor(nextD(world))) {
                     position.x += 1;
                 }
+                break;
             default:
                 return;
         }

@@ -73,11 +73,15 @@ public class Game {
             mapGenerator.controlPlayer(world, input);
             ter.renderFrame(world);
             if (input == ':') {
+                while (!StdDraw.hasNextKeyTyped()) {
+                    continue;
+                }
                 input = StdDraw.nextKeyTyped();
                 if (input == 'q') {
                     return;
                 } else if (input == 'l') {
                     saveGame(mapGenerator);
+
                     return;
                 }
             }
