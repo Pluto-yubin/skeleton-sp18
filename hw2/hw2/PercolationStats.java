@@ -46,7 +46,7 @@ public class PercolationStats {
         threshold = new double[count];
         for (int i = 0; i < count; i++) {
             PercolationStats stats = new PercolationStats(size, count, new PercolationFactory());
-            Percolation percolation = stats.percolation;
+            this.percolation = stats.percolation;
             while (!percolation.percolates()) {
                 int x = StdRandom.uniform(size);
                 int y = StdRandom.uniform(size);

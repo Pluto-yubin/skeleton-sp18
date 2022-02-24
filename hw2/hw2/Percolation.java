@@ -43,7 +43,7 @@ public class Percolation {
     }
 
     private void connectTo(int row, int col, int index) {
-        if (col < 0 || row < 0 || col >= grids.length || row >= grids.length) { ;
+        if (col < 0 || row < 0 || col >= grids.length || row >= grids.length) {
             return;
         }
         if (isOpen(row, col)) {
