@@ -9,7 +9,7 @@ public class PercolationStats {
     private int size = 0;
     private double[] threshold;
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if (T < 0 || N < 0) {
+        if (T <= 0 || N <= 0) {
             throw new IllegalArgumentException("T and N should be positive");
         }
         percolation = pf.make(N);
@@ -17,10 +17,12 @@ public class PercolationStats {
         size = N;
     }
     public double mean() {
+        getThreshold();
         return StdStats.mean(threshold);
     }
 
     public double stddev() {
+        getThreshold();
         return StdStats.stddev(threshold);
     }
     public double confidenceLow() {
@@ -46,6 +48,7 @@ public class PercolationStats {
         threshold = new double[count];
         for (int i = 0; i < count; i++) {
             PercolationStats stats = new PercolationStats(size, count, new PercolationFactory());
+
             this.percolation = stats.percolation;
             while (!percolation.percolates()) {
                 int x = StdRandom.uniform(size);
