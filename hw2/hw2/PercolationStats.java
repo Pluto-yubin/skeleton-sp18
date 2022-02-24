@@ -22,7 +22,7 @@ public class PercolationStats {
                     percolation.open(x, y);
                 }
             }
-            threshold[i] = percolation.numberOfOpenSites() / Math.pow(N, 2);
+            threshold[i] = (double) percolation.numberOfOpenSites() / (N * N);
         }
     }
     public double mean() {
@@ -42,14 +42,8 @@ public class PercolationStats {
     }
 
     private double getNumber() {
-        double d = 1.96 * Math.sqrt(stddev()) / Math.sqrt(T);
+        double d = 1.96 * stddev() / Math.sqrt(T);
         return d;
     }
 
-
-    public static void main(String[] args) {
-        PercolationStats stats = new PercolationStats(5, 30, new PercolationFactory());
-        System.out.println(stats.confidenceLow());
-        System.out.println(stats.confidenceHigh());
-    }
 }
