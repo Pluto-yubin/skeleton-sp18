@@ -57,10 +57,4 @@ public class PercolationStats {
             threshold[i] = percolation.numberOfOpenSites() / Math.pow(size, 2);
         }
     }
-
-    public static void main(String[] args) {
-        PercolationStats stats = new PercolationStats(20, 30, new PercolationFactory());
-        System.out.println(stats.confidenceLow());
-        System.out.println(stats.confidenceHigh());
-    }
 }

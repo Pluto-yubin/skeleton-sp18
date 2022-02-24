@@ -16,13 +16,6 @@ public class Percolation {
         unionUF = new WeightedQuickUnionUF(N * N + 2);
         ROOT = N * N;
         TAIL = N * N + 1;
-        for (int i = 0; i < N; i++) {
-            unionUF.union(i, ROOT);
-        }
-        for (int i = 0; i < N; i++) {
-            int index = xyTo1D(N - 1, i);
-            unionUF.union(index, TAIL);
-        }
     }
 
     private int xyTo1D(int row, int col) {
@@ -36,6 +29,11 @@ public class Percolation {
         grids[row][col] = true;
         count += 1;
         int index = xyTo1D(row, col);
+        if (index < grids.length) {
+            unionUF.union(index, ROOT);
+        } else if (index >= grids.length * (grids.length - 1)) {
+            unionUF.union(index, TAIL);
+        }
         connectTo(row - 1, col, index);
         connectTo(row + 1, col, index);
         connectTo(row, col - 1, index);
@@ -74,6 +72,19 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-
+        Percolation percolation = new Percolation(5);
+        percolation.open(3, 4);
+        percolation.open(2, 4);
+        System.out.println(unionUF.connected(14, 19));
+        percolation.open(2, 2);
+        percolation.open(2, 3);
+        System.out.println(unionUF.connected(12, 19));
+        percolation.open(0, 2);
+        percolation.open(1, 2);
+        System.out.println(percolation.isFull(0, 2));
+        System.out.println(percolation.isFull(1, 2));
+        System.out.println(percolation.isFull(3, 4));
+        System.out.println(unionUF.connected(4, 12));
+        System.out.println(percolation.isFull(0, 0));
     }
 }
