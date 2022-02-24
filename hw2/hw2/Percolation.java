@@ -2,6 +2,8 @@ package hw2;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+import java.util.Arrays;
+
 public class Percolation {
     private  WeightedQuickUnionUF unionUF;
     private WeightedQuickUnionUF unionUFHelp;
@@ -77,6 +79,18 @@ public class Percolation {
 
     public boolean percolates() {
         return unionUF.connected(ROOT, TAIL);
+    }
+
+    public void clear() {
+        int N = grids.length;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                grids[i][j] = false;
+            }
+        }
+        unionUF = new WeightedQuickUnionUF(N * N + 2);
+        unionUFHelp = new WeightedQuickUnionUF(N * N + 1);
+        count = 0;
     }
 
     public static void main(String[] args) {

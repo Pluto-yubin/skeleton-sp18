@@ -47,9 +47,7 @@ public class PercolationStats {
         }
         threshold = new double[count];
         for (int i = 0; i < count; i++) {
-            PercolationStats stats = new PercolationStats(size, count, new PercolationFactory());
-
-            this.percolation = stats.percolation;
+            percolation.clear();
             while (!percolation.percolates()) {
                 int x = StdRandom.uniform(size);
                 int y = StdRandom.uniform(size);
@@ -60,4 +58,10 @@ public class PercolationStats {
             threshold[i] = percolation.numberOfOpenSites() / Math.pow(size, 2);
         }
     }
+
+//    public static void main(String[] args) {
+//        PercolationStats stats = new PercolationStats(5, 30, new PercolationFactory());
+//        System.out.println(stats.confidenceLow());
+//        System.out.println(stats.confidenceHigh());
+//    }
 }
