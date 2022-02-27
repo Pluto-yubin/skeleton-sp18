@@ -8,13 +8,13 @@ import java.util.Set;
  *
  * @author Your name here
  */
-public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterable<K> {
 
     private class Node {
         /* (K, V) pair stored in this Node. */
         private K key;
         private V value;
-
+        private int size;
         /* Children of this Node. */
         private Node left;
         private Node right;
@@ -44,7 +44,15 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      *  or null if this map contains no mapping for the key.
      */
     private V getHelper(K key, Node p) {
-        throw new UnsupportedOperationException();
+        if (p == null) {
+            return null;
+        } else if (key.equals(p.key)) {
+            return p.value;
+        } else if (key.compareTo(p.key) < 0) {
+            return getHelper(key, p.left);
+        } else {
+            return getHelper(key, p.right);
+        }
     }
 
     /** Returns the value to which the specified key is mapped, or null if this
@@ -52,14 +60,27 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        return getHelper(key, root);
     }
 
     /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
       * Or if p is null, it returns a one node BSTMap containing (KEY, VALUE).
      */
     private Node putHelper(K key, V value, Node p) {
-        throw new UnsupportedOperationException();
+        if (root == null) {
+            root = new Node(key, value);
+            return root;
+        }
+        if (p == null) {
+            return new Node(key, value);
+        } else if (key.compareTo(p.key) < 0) {
+            p.left = putHelper(key, value, p.left);
+        } else if (key.compareTo(p.key) > 0) {
+            p.right = putHelper(key, value, p.right);
+        } else {
+            p.value = value;
+        }
+        return p;
     }
 
     /** Inserts the key KEY
@@ -67,13 +88,14 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        size += 1;
+        putHelper(key, value, root);
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
@@ -90,20 +112,129 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        if (key == null) {
+            return null;
+        }
+        return removeHelper(key, root);
     }
 
+    private V removeHelper(K key, Node node) {
+        if (node == null) {
+            return null;
+        }
+        if (key.equals(node.key)) {
+            if (isLeaf(node)) {
+                deleteWithoutChild(node);
+            } else if (hasOneChild(node)) {
+                deleteWithOneChild(node);
+            } else {
+                Node rightMost = rightMost(node.left);
+                V temp = node.value;
+                node.value = rightMost.value;
+                if (isLeaf(rightMost)) {
+                    deleteWithoutChild(rightMost);
+                } else {
+                    deleteWithOneChild(rightMost);
+                }
+                size -= 1;
+                return temp;
+            }
+            size -= 1;
+            return node.value;
+        } else if (key.compareTo(node.key) < 0) {
+            return removeHelper(key, node.left);
+        } else {
+            return removeHelper(key, node.right);
+        }
+    }
+
+    private Node rightMost(Node node) {
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node;
+    }
+
+    private Node findFatherNode(K key, Node node) {
+        if (node == null || isLeaf(node)) {
+            return null;
+        }
+        if (node.left != null && key.equals(node.left.key)) {
+            return node;
+        } else if (node.right != null && key.equals(node.right.key)) {
+            return node;
+        } else if (key.compareTo(node.key) < 0) {
+            return findFatherNode(key, node.left);
+        } else if (key.compareTo(node.key) > 0) {
+            return findFatherNode(key, node.right);
+        } else {
+            return null;
+        }
+    }
+
+    private void deleteWithOneChild(Node node) {
+        Node father = findFatherNode(node.key, root);
+        Node connectTo = node.left == null ? node.right : node.left;
+        if (father.left != null && father.left.key.equals(node)) {
+            father.left = connectTo;
+        } else {
+            father.right = connectTo;
+        }
+    }
+
+    private void deleteWithoutChild(Node node) {
+        Node father = findFatherNode(node.key, root);
+        if (father == null) {
+            root = null;
+            return;
+        }
+        if (father.left.key.equals(node.key)) {
+            father.left = null;
+        } else {
+            father.right = null;
+        }
+    }
+
+    private boolean isLeaf(Node node) {
+        return node != null && node.left == null && node.right == null;
+    }
+
+    private boolean hasOneChild(Node node) {
+        if (node == null || node.left != null && node.right != null || isLeaf(node)) {
+            return false;
+        }
+        return true;
+    }
     /** Removes the key-value entry for the specified key only if it is
      *  currently mapped to the specified value.  Returns the VALUE removed,
      *  null on failed removal.
      **/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (get(key) == value) {
+            return remove(key);
+        }
+        return null;
     }
 
     @Override
     public Iterator<K> iterator() {
         throw new UnsupportedOperationException();
+    }
+
+    public boolean isBST() {
+        return isBST(this.root);
+    }
+
+    private boolean isBST(Node root) {
+        if (root == null) {
+            return true;
+        }
+        if (root.left != null && root.key.compareTo(root.left.key) < 0) {
+            return false;
+        } else if (root.right != null && root.key.compareTo(root.right.key) > 0) {
+            return false;
+        }
+        return isBST(root.left) && isBST(root.right);
     }
 }

@@ -86,6 +86,25 @@ public class TestBSTMap {
         assertTrue(b.get("hi") != null);
     }
 
+    @Test
+    public void testRemove() {
+        BSTMap<Integer, Integer> b = new BSTMap<>();
+        b.put(5, 5);
+        b.put(3, 3);
+        b.put(1, 1);
+        b.put(6, 6);
+        b.put(2, 2);
+        b.put(4, 4);
+        b.put(7, 7);
+        assertEquals(7, b.size());
+        assertEquals(Integer.valueOf(6), b.remove(6));
+        assertEquals(6, b.size());
+        assertNull(b.get(6));
+        assertEquals(Integer.valueOf(7), b.get(7));
+        assertEquals(Integer.valueOf(5), b.get(5));
+        assertTrue(b.isBST());
+    }
+
     public static void main(String[] args) {
         jh61b.junit.TestRunner.runTests(TestBSTMap.class);
     }
