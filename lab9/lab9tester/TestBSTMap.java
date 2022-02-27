@@ -97,12 +97,29 @@ public class TestBSTMap {
         b.put(4, 4);
         b.put(7, 7);
         assertEquals(7, b.size());
-        assertEquals(Integer.valueOf(6), b.remove(6));
+        assertEquals(Integer.valueOf(5), b.remove(5));
         assertEquals(6, b.size());
-        assertNull(b.get(6));
         assertEquals(Integer.valueOf(7), b.get(7));
-        assertEquals(Integer.valueOf(5), b.get(5));
         assertTrue(b.isBST());
+    }
+
+    @Test
+    public void testRemoveRoot() {
+        BSTMap<Integer, Integer> b = new BSTMap<>();
+        b.put(1, 1);
+        assertEquals(Integer.valueOf(1), b.remove(1));
+        b.put(5, 5);
+        b.put(7, 7);
+        b.put(10, 10);
+        b.put(8, 8);
+        b.put(4, 4);
+        b.put(9, 9);
+        b.put(6, 6);
+        b.put(2, 2);
+        b.put(3, 3);
+        b.put(1, 1);
+        assertEquals(Integer.valueOf(5), b.remove(5));
+        assertNull(b.get(5));
     }
 
     public static void main(String[] args) {

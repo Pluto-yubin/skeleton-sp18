@@ -130,6 +130,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
             } else {
                 Node rightMost = rightMost(node.left);
                 V temp = node.value;
+                node.key = rightMost.key;
                 node.value = rightMost.value;
                 if (isLeaf(rightMost)) {
                     deleteWithoutChild(rightMost);

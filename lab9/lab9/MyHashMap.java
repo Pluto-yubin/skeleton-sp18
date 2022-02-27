@@ -61,6 +61,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public void put(K key, V value) {
         int index = hash(key);
+        if (buckets[index] == null) {
+            buckets[index] = new ArrayMap<>();
+        }
         int preSize = buckets[index].size;
         buckets[index].put(key, value);
         size += buckets[index].size() - preSize;
