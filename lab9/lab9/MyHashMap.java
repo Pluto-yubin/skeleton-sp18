@@ -54,6 +54,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public V get(K key) {
         int index = hash(key);
+        if (buckets[index] == null) {
+            return null;
+        }
         return buckets[index].get(key);
     }
 
