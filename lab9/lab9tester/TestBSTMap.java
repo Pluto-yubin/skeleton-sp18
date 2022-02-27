@@ -120,6 +120,9 @@ public class TestBSTMap {
         b.put(1, 1);
         assertEquals(Integer.valueOf(5), b.remove(5));
         assertNull(b.get(5));
+        assertEquals(Integer.valueOf(10), b.remove(10));
+        assertNull(b.get(10));
+        assertTrue(b.isBST());
     }
 
     public static void main(String[] args) {

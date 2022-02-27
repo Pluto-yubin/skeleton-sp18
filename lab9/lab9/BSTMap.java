@@ -176,7 +176,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
     private void deleteWithOneChild(Node node) {
         Node father = findFatherNode(node.key, root);
         Node connectTo = node.left == null ? node.right : node.left;
-        if (father.left != null && father.left.key.equals(node)) {
+        if (father.left != null && father.left.key.equals(node.key)) {
             father.left = connectTo;
         } else {
             father.right = connectTo;
@@ -189,7 +189,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
             root = null;
             return;
         }
-        if (father.left.key.equals(node.key)) {
+        if (father.left != null && father.left.key.equals(node.key)) {
             father.left = null;
         } else {
             father.right = null;
