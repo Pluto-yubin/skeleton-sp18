@@ -226,15 +226,15 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         return isBST(this.root);
     }
 
-    private boolean isBST(Node root) {
-        if (root == null) {
+    private boolean isBST(Node node) {
+        if (node == null) {
             return true;
         }
-        if (root.left != null && root.key.compareTo(root.left.key) < 0) {
+        if (node.left != null && node.key.compareTo(node.left.key) < 0) {
             return false;
-        } else if (root.right != null && root.key.compareTo(root.right.key) > 0) {
+        } else if (node.right != null && node.key.compareTo(node.right.key) > 0) {
             return false;
         }
-        return isBST(root.left) && isBST(root.right);
+        return isBST(node.left) && isBST(node.right);
     }
 }
