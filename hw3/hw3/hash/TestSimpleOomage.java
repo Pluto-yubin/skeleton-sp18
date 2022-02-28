@@ -30,6 +30,9 @@ public class TestSimpleOomage {
         assertNotEquals(ooA.hashCode(), ooC.hashCode());
         assertNotEquals(ooA.hashCode(), ooB.hashCode());
         assertNotEquals(ooB.hashCode(), ooC.hashCode());
+        ooA = new SimpleOomage(0, 0, 5);
+        ooB = new SimpleOomage(0, 5, 0);
+        assertNotEquals(ooA.hashCode(), ooB.hashCode());
     }
 
     @Test
