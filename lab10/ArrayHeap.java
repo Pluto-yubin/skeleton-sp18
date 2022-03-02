@@ -27,24 +27,21 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * Returns the index of the node to the left of the node at i.
      */
     private static int leftIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return i * 2;
     }
 
     /**
      * Returns the index of the node to the right of the node at i.
      */
     private static int rightIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return i * 2 + 1;
     }
 
     /**
      * Returns the index of the node that is the parent of the node at i.
      */
     private static int parentIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return i / 2;
     }
 
     /**
@@ -99,15 +96,26 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         }
     }
 
-
+    private boolean less(int index1, int index2) {
+        if (Math.min(index1, index2) <= 0 || Math.max(index1, index2) >= contents.length) {
+            return false;
+        }
+        return min(index1, index2) == index1;
+    }
     /**
      * Bubbles up the node currently at the given index.
      */
     private void swim(int index) {
+        if (index <= 0) {
+            return;
+        }
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
-        /** TODO: Your code here. */
+        int parent = parentIndex(index);
+        if (less(index, parent)) {
+            swap(index, parent);
+            swim(parent);
+        }
         return;
     }
 
@@ -115,10 +123,18 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * Bubbles down the node currently at the given index.
      */
     private void sink(int index) {
+        if (index > size) {
+            return;
+        }
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
-        /** TODO: Your code here. */
+        int left = leftIndex(index);
+        int right = rightIndex(index);
+        int min = min(left, right);
+        if (less(min, index)) {
+            swap(index, min);
+            sink(min);
+        }
         return;
     }
 
@@ -132,8 +148,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (size + 1 == contents.length) {
             resize(contents.length * 2);
         }
-
-        /* TODO: Your code here! */
+        size += 1;
+        contents[size] = new Node(item, priority);
+        swim(size);
     }
 
     /**
@@ -142,8 +159,10 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T peek() {
-        /* TODO: Your code here! */
-        return null;
+        if (contents[1] == null) {
+            return null;
+        }
+        return contents[1].item();
     }
 
     /**
@@ -157,8 +176,11 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T removeMin() {
-        /* TODO: Your code here! */
-        return null;
+        T res = peek();
+        swap(1, size);
+        size -= 1;
+        sink(1);
+        return res;
     }
 
     /**
@@ -180,7 +202,16 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
-        /* TODO: Your code here! */
+        int index = 0;
+        for (int i = 1; i <= size; i++) {
+            if (item.equals(contents[i].myItem)) {
+                index = i;
+                break;
+            }
+        }
+        contents[index].myPriority = priority;
+        sink(index);
+        swim(index);
         return;
     }
 
@@ -238,7 +269,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             myPriority = priority;
         }
 
-        public T item(){
+        public T item() {
             return myItem;
         }
 
@@ -405,11 +436,12 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         pq.insert("b", 2);
         pq.insert("c", 3);
         pq.insert("d", 4);
-
+        System.out.println(pq);
         int i = 0;
         String[] expected = {"a", "b", "c", "c", "d", "d", "e", "g", "h", "i"};
         while (pq.size() > 1) {
             assertEquals(expected[i], pq.removeMin());
+            System.out.println(pq);
             i += 1;
         }
     }
