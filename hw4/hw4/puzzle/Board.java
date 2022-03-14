@@ -122,6 +122,9 @@ public class Board implements WorldState {
         if (y.hashCode() == hashCode()) {
             return true;
         }
+        if (size() != ((Board) y).size()) {
+            return false;
+        }
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
                 if (tileAt(i, j) != ((Board) y).tileAt(i, j)) {
@@ -152,5 +155,4 @@ public class Board implements WorldState {
         s.append("\n");
         return s.toString();
     }
-
 }
