@@ -86,16 +86,4 @@ public class MergeSort {
         }
         return queues.dequeue();
     }
-
-    public static void main(String[] args) {
-        Queue<Integer> queue = new Queue<>();
-        queue.enqueue(4);
-        queue.enqueue(1);
-        queue.enqueue(3);
-        queue.enqueue(6);
-        queue.enqueue(5);
-        queue.enqueue(2);
-        queue = MergeSort.mergeSort(queue);
-        System.out.println(queue);
-    }
 }
