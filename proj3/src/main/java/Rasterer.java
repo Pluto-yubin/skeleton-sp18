@@ -1,4 +1,7 @@
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,7 +11,17 @@ import java.util.Map;
  * not draw the output correctly.
  */
 public class Rasterer {
-
+    //  longitude (a.k.a. x coordinates)
+    private double lrlon;
+    private double ullon;
+    private double ullat;
+    private double lrlat;
+    private double w;
+    private double h;
+    private double raster_ul_lon = Double.MAX_VALUE;
+    private double raster_ul_lat = Double.MIN_VALUE;
+    private double raster_lr_lon = -Double.MAX_VALUE;
+    private double raster_lr_lat = Double.MAX_VALUE;
     public Rasterer() {
         // YOUR CODE HERE
     }
@@ -42,11 +55,184 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
+        initVariable(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+        int depth = getDepth();
+        results.put("depth", depth);
+        results.put("render_grid", getTilesName(depth));
+        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("raster_lr_lon", raster_lr_lon);
+        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("query_success", true);
+        if (ullon < MapServer.ROOT_ULLON || lrlon > MapServer.ROOT_LRLON || ullat > MapServer.ROOT_ULLAT || lrlat < MapServer.ROOT_LRLAT) {
+            results.put("query_success", false);
+        }
         return results;
     }
 
+    /**
+     * init the variables according to request params
+     * @param params
+     */
+    private void initVariable(Map<String, Double> params) {
+        for (String s : params.keySet()) {
+            try {
+                Field field = this.getClass().getDeclaredField(s);
+                field.setAccessible(true);
+                field.set(this, params.get(s));
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /**
+     * get the LonDPP provided by params
+     * @return
+     */
+    private double getLonDPP() {
+        return (lrlon - ullon) / w;
+    }
+
+    private double getLonDPP(double lrl, double ull, double ww) {
+        return (lrl - ull) / ww;
+    }
+
+    private int getDepth() {
+        return getDepth(MapServer.ROOT_LRLON, MapServer.ROOT_ULLON, 0);
+    }
+    /**
+     * Get the required depth of map according to params
+     * @param lrl
+     * @param ull
+     * @param depth default should be zero
+     * @return The maximum of return value is 7
+     */
+    private int getDepth(double lrl, double ull, int depth) {
+        double lonDPP = getLonDPP(lrl, ull, MapServer.TILE_SIZE);
+        if (depth >= 7 || lonDPP < getLonDPP()) {
+            return depth;
+        }
+        lrl = getLrLon(depth + 1, 0);
+        return getDepth(lrl, ull, depth + 1);
+    }
+
+    /**
+     * Get the right longitude of d(depth)_xi_y0
+     * @param depth
+     * @return
+     */
+    private double getLrLon(int depth, int i) {
+        int divide = (int) Math.pow(2, depth);
+        double divideLon = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / divide;
+        return MapServer.ROOT_ULLON + divideLon * (i + 1);
+    }
+
+    /**
+     * get the upper latitude (a.k.a y coordinate) of picture d(depth)_x0_yi
+     * @param depth
+     * @param i
+     * @return
+     */
+    private double getUllat(int depth, int i) {
+        int divide = (int) Math.pow(2, depth);
+        double divideLat = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / divide;
+        return MapServer.ROOT_ULLAT - divideLat * i;
+    }
+
+    /**
+     * get all the name of image including the field of user provides
+     * @param depth
+     * @return
+     */
+    private String[][] getTilesName(int depth) {
+        int N = (int) Math.pow(2, depth);
+        String d = "d" + depth;
+        List<List<String>> lists = new LinkedList<>();
+        // 因为地图从左往右遍历，所以在这里i表示上下，即为y轴，j表示左右，即为x轴
+        for (int i = 0; i < N; i++) {
+            double ulLat = getUllat(depth, i);
+            double llLat = getUllat(depth, i + 1);
+            // ignore all the regions that above the query box
+            if (llLat > ullat) {
+                continue;
+            }
+            // ignore all the regions that below the query box
+            if (ulLat < lrlat) {
+                break;
+            }
+            List<String> names = new LinkedList<>();
+            for (int j = 0; j < N; j++) {
+                double lrLon = getLrLon(depth, j);
+                double llLon = getLrLon(depth, j-1);
+                // ignore all the regions that on the right side of the query box
+                if (llLon > lrLon) {
+                    break;
+                }
+                if (inFields(lrLon, llLon, ulLat, llLat)) {
+                    names.add(d + "_x" + j + "_y" + i);
+                }
+            }
+            if (!names.isEmpty()) {
+                lists.add(names);
+            }
+        }
+        return listToStringArray(lists);
+    }
+
+    private String[][] listToStringArray(List<List<String>> lists) {
+        String[][] res = new String[lists.size()][lists.get(0).size()];
+        for (int i = 0; i < lists.size(); i++) {
+            for (int j = 0; j < lists.get(i).size(); j++) {
+                res[i][j] = lists.get(i).get(j);
+            }
+        }
+        return res;
+    }
+
+    private boolean inFields(double lrLon, double llLon, double ulLat, double llLat) {
+        if (lonInField(llLon, lrLon) && latInFieds(llLat, ulLat)) {
+            raster_ul_lon = Math.min(raster_ul_lon, llLon);
+            raster_ul_lat = Math.max(raster_ul_lat, ulLat);
+            raster_lr_lat = Math.min(raster_lr_lat, llLat);
+            raster_lr_lon = Math.max(raster_lr_lon, lrLon);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * In y coordinate----------->   y1
+     *                                |         y3
+     *                                |          |
+     *                                |          |
+     *                                y2         |
+     *                                           y4
+     * y3 is ullat, y4 is lrlat
+     * @param y1
+     * @param y2
+     * @return
+     */
+    private boolean latInFieds(double y1, double y2) {
+        if (y1 < ullat && y1 > lrlat || y2 < ullat && y2 > lrlat) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * In x coordinate---------->   x1_____________x2
+     *                                      x3______________x4
+     *                                              x1______________x2
+     * x3 is ullon, x4 is lrlon
+     * @param x1
+     * @param x2
+     * @return
+     */
+    private boolean lonInField(double x1, double x2) {
+        if (x2 > ullon && x2 < lrlon || x1 > ullon && x1 < lrlon) {
+            return true;
+        }
+        return false;
+    }
 }
