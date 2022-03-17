@@ -1,4 +1,3 @@
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,15 +75,12 @@ public class Rasterer {
      * @param params
      */
     private void initVariable(Map<String, Double> params) {
-        for (String s : params.keySet()) {
-            try {
-                Field field = this.getClass().getDeclaredField(s);
-                field.setAccessible(true);
-                field.set(this, params.get(s));
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        ullat = params.get("ullat");
+        ullon = params.get("ullon");
+        lrlat = params.get("lrlat");
+        lrlon = params.get("lrlon");
+        w = params.get("w");
+        h = params.get("h");
     }
     /**
      * get the LonDPP provided by params
