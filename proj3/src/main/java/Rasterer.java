@@ -64,7 +64,7 @@ public class Rasterer {
         results.put("raster_lr_lon", raster_lr_lon);
         results.put("raster_lr_lat", raster_lr_lat);
         results.put("query_success", true);
-        if (ullon < MapServer.ROOT_ULLON || lrlon > MapServer.ROOT_LRLON || ullat > MapServer.ROOT_ULLAT || lrlat < MapServer.ROOT_LRLAT) {
+        if (!inFields(MapServer.ROOT_LRLON, MapServer.ROOT_ULLON, MapServer.ROOT_ULLAT, MapServer.ROOT_LRLAT) || ullon > lrlon || ullat < lrlat) {
             results.put("query_success", false);
         }
         return results;
@@ -166,7 +166,7 @@ public class Rasterer {
                     break;
                 }
                 if (inFields(lrLon, llLon, ulLat, llLat)) {
-                    names.add(d + "_x" + j + "_y" + i);
+                    names.add(d + "_x" + j + "_y" + i + ".png");
                 }
             }
             if (!names.isEmpty()) {
@@ -198,11 +198,11 @@ public class Rasterer {
     }
 
     /**
-     * In y coordinate----------->   y1
+     * In y coordinate----------->   y2
      *                                |         y3
      *                                |          |
      *                                |          |
-     *                                y2         |
+     *                                y1         |
      *                                           y4
      * y3 is ullat, y4 is lrlat
      * @param y1
@@ -211,6 +211,10 @@ public class Rasterer {
      */
     private boolean latInFieds(double y1, double y2) {
         if (y1 < ullat && y1 > lrlat || y2 < ullat && y2 > lrlat) {
+            return true;
+        }
+        // check if the region user provided in the region of whole map, vice verse
+        if (y1 < lrlat && y2 > ullat || y1 > lrlat && y2 < ullat) {
             return true;
         }
         return false;
@@ -227,6 +231,10 @@ public class Rasterer {
      */
     private boolean lonInField(double x1, double x2) {
         if (x2 > ullon && x2 < lrlon || x1 > ullon && x1 < lrlon) {
+            return true;
+        }
+
+        if (x1 < ullon && x2 > lrlon || x1 > ullon && x2 < lrlon) {
             return true;
         }
         return false;
