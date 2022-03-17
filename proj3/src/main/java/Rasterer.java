@@ -81,10 +81,12 @@ public class Rasterer {
         int depth = (int) results.get("depth");
         String first = maps[0][0];
         String last = maps[maps.length - 1][maps[0].length - 1];
-        int x0 = first.charAt(4) - '0';
-        int y0 = first.charAt(7) - '0';
-        int x1 = last.charAt(4) - '0';
-        int y1 = last.charAt(7) - '0';
+        String[] ss1 = first.split("\\.")[0].split("_");
+        String[] ss2 = last.split("\\.")[0].split("_");
+        int x0 = Integer.parseInt(ss1[1].substring(1));
+        int y0 = Integer.parseInt(ss1[2].substring(1));
+        int x1 = Integer.parseInt(ss2[1].substring(1));
+        int y1 = Integer.parseInt(ss2[2].substring(1));
         raster_ul_lon = getLrLon(depth, x0 - 1);
         raster_ul_lat = getUllat(depth, y0);
         raster_lr_lon = getLrLon(depth, x1);
