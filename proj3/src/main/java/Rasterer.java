@@ -59,18 +59,36 @@ public class Rasterer {
         int depth = getDepth();
         results.put("depth", depth);
         results.put("render_grid", getTilesName(depth));
-        // when inFields Method change the value of the variable, the value in map will also change, so in here
-        // it needs a deep copy of these values
-        results.put("raster_ul_lon", Double.valueOf(raster_ul_lon));
-        results.put("raster_ul_lat", Double.valueOf(raster_ul_lat));
-        results.put("raster_lr_lon", Double.valueOf(raster_lr_lon));
-        results.put("raster_lr_lat", Double.valueOf(raster_lr_lat));
+        appendRaster(results);
+        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("raster_lr_lon", raster_lr_lon);
+        results.put("raster_lr_lat", raster_lr_lat);
         results.put("query_success", true);
-        if (!inFields(MapServer.ROOT_LRLON, MapServer.ROOT_ULLON, MapServer.ROOT_ULLAT, MapServer.ROOT_LRLAT) || ullon > lrlon || ullat < lrlat) {
+        if (!inFields(MapServer.ROOT_LRLON, MapServer.ROOT_ULLON, MapServer.ROOT_ULLAT, MapServer.ROOT_LRLAT, false) || ullon > lrlon || ullat < lrlat) {
             results.put("query_success", false);
         }
         System.out.println(results);
         return results;
+    }
+
+    /**
+     * format: d?_x?_y?
+     * @param results
+     */
+    private void appendRaster(Map<String, Object> results) {
+        String[][] maps = (String[][]) results.get("render_grid");
+        int depth = (int) results.get("depth");
+        String first = maps[0][0];
+        String last = maps[maps.length - 1][maps[0].length - 1];
+        int x0 = first.charAt(4) - '0';
+        int y0 = first.charAt(7) - '0';
+        int x1 = last.charAt(4) - '0';
+        int y1 = last.charAt(7) - '0';
+        raster_ul_lon = getLrLon(depth, x0 - 1);
+        raster_ul_lat = getUllat(depth, y0);
+        raster_lr_lon = getLrLon(depth, x1);
+        raster_lr_lat = getUllat(depth, y1 + 1);
     }
 
     /**
@@ -168,7 +186,7 @@ public class Rasterer {
                 if (llLon > lrLon) {
                     break;
                 }
-                if (inFields(lrLon, llLon, ulLat, llLat)) {
+                if (inFields(lrLon, llLon, ulLat, llLat, true)) {
                     names.add(d + "_x" + j + "_y" + i + ".png");
                 }
             }
@@ -189,12 +207,12 @@ public class Rasterer {
         return res;
     }
 
-    private boolean inFields(double lrLon, double llLon, double ulLat, double llLat) {
+    private boolean inFields(double lrLon, double llLon, double ulLat, double llLat, boolean modify) {
         if (lonInField(llLon, lrLon) && latInFieds(llLat, ulLat)) {
-            raster_ul_lon = Math.min(raster_ul_lon, llLon);
-            raster_ul_lat = Math.max(raster_ul_lat, ulLat);
-            raster_lr_lat = Math.min(raster_lr_lat, llLat);
-            raster_lr_lon = Math.max(raster_lr_lon, lrLon);
+//            raster_ul_lon = Math.min(raster_ul_lon, llLon);
+//            raster_ul_lat = Math.max(raster_ul_lat, ulLat);
+//            raster_lr_lat = Math.min(raster_lr_lat, llLat);
+//            raster_lr_lon = Math.max(raster_lr_lon, lrLon);
             return true;
         }
         return false;
