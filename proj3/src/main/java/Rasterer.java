@@ -59,14 +59,17 @@ public class Rasterer {
         int depth = getDepth();
         results.put("depth", depth);
         results.put("render_grid", getTilesName(depth));
-        results.put("raster_ul_lon", raster_ul_lon);
-        results.put("raster_ul_lat", raster_ul_lat);
-        results.put("raster_lr_lon", raster_lr_lon);
-        results.put("raster_lr_lat", raster_lr_lat);
+        // when inFields Method change the value of the variable, the value in map will also change, so in here
+        // it needs a deep copy of these values
+        results.put("raster_ul_lon", Double.valueOf(raster_ul_lon));
+        results.put("raster_ul_lat", Double.valueOf(raster_ul_lat));
+        results.put("raster_lr_lon", Double.valueOf(raster_lr_lon));
+        results.put("raster_lr_lat", Double.valueOf(raster_lr_lat));
         results.put("query_success", true);
         if (!inFields(MapServer.ROOT_LRLON, MapServer.ROOT_ULLON, MapServer.ROOT_ULLAT, MapServer.ROOT_LRLAT) || ullon > lrlon || ullat < lrlat) {
             results.put("query_success", false);
         }
+        System.out.println(results);
         return results;
     }
 
@@ -160,7 +163,7 @@ public class Rasterer {
             List<String> names = new LinkedList<>();
             for (int j = 0; j < N; j++) {
                 double lrLon = getLrLon(depth, j);
-                double llLon = getLrLon(depth, j-1);
+                double llLon = getLrLon(depth, j - 1);
                 // ignore all the regions that on the right side of the query box
                 if (llLon > lrLon) {
                     break;
