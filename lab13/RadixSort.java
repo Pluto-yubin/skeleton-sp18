@@ -72,12 +72,12 @@ public class RadixSort {
         return;
     }
 
-    public static void main(String[] args) {
-        String[] strings = {"z", "`", "]", "Ò"};
-        System.out.println(2e9 < 2147483647);
-        for (String s : strings) {
-            System.out.println((int) s.charAt(0));
-        }
-        RadixSort.sort(strings);
-    }
+//    public static void main(String[] args) {
+//        String[] strings = {"z", "`", "]", "Ò"};
+//        System.out.println(2e9 < 2147483647);
+//        for (String s : strings) {
+//            System.out.println((int) s.charAt(0));
+//        }
+//        RadixSort.sort(strings);
+//    }
 }
