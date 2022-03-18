@@ -23,11 +23,11 @@ public class RadixSort {
         for (int i = 0; i < asciis.length; i++) {
             maxLen = Math.max(maxLen, asciis[i].length());
         }
-        for (int i = 1; i <= maxLen; i++) {
+        for (int i = 0; i < maxLen; i++) {
             int[] count = new int[256];
             for (int j = 0; j < asciis.length; j++) {
                 String s = asciis[j];
-                int pos = s.length() >= i ? s.charAt(s.length() - i) : 0;
+                int pos = s.length() <= i ? 0 : s.charAt(i);
                 count[pos] += 1;
             }
 
@@ -38,7 +38,7 @@ public class RadixSort {
                 pos += count[j];
             }
             for (String s : Arrays.copyOf(sorted, sorted.length)) {
-                int index = s.length() >= i ? s.charAt(s.length() - i) : 0;
+                int index = s.length() <= i ? 0 : s.charAt(i);
                 int place = starter[index];
                 sorted[place] = s;
                 starter[index] += 1;
@@ -72,4 +72,12 @@ public class RadixSort {
         return;
     }
 
+    public static void main(String[] args) {
+        String[] strings = {"z", "`", "]", "Ò"};
+        System.out.println(2e9 < 2147483647);
+        for (String s : strings) {
+            System.out.println((int) s.charAt(0));
+        }
+        RadixSort.sort(strings);
+    }
 }

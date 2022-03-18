@@ -67,13 +67,21 @@ public class CountingSort {
      */
     public static int[] betterCountingSort(int[] arr) {
         int max = Integer.MIN_VALUE;
+        int countNum = 0;
         for (int item : arr) {
+            if (Math.abs(item) > 2e9) {
+                countNum += 1;
+                continue;
+            }
             max = Math.max(max, Math.abs(item));
         }
 
         int[] countPositive = new int[max + 1];
         int[] countNegative = new int[max + 1];
         for (int item : arr) {
+            if (Math.abs(item) > 2e9) {
+                continue;
+            }
             if (item < 0) {
                 countNegative[-item] += 1;
             } else {
@@ -81,7 +89,7 @@ public class CountingSort {
             }
         }
 
-        int[] sorted = new int[arr.length];
+        int[] sorted = new int[arr.length - countNum];
         int pos = 0;
         for (int i = countNegative.length - 1; i >= 0; i--) {
             while (countNegative[i] > 0) {

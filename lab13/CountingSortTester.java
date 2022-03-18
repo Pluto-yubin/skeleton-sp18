@@ -7,7 +7,7 @@ public class CountingSortTester {
      * Array that will cause CountingSort.naiveCountingSort to fail, but
      * CountingSort.betterCountingSort can handle.
      **/
-    private static int[] someNegative = {9, 5, -4, 2, 1, -2, 5, 3, 0, -2, 3, 1, 1};
+    private static int[] someNegative = {9, 5, -4, 2, 1, -2, 5, 3, 0, -2, 3, 1, 1, -2147483647};
 
     /**
      * Array that both sorts should sort successfully.
