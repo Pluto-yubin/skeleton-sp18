@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -21,12 +21,77 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
+    private Map<Long, Node> nodeMap;
+    private Map<Long, List<Edge>> adj;
+
+    /**
+     * add node to the graph
+      * @param node
+     */
+    public void addNode(Node node) {
+        nodeMap.put(node.id, node);
+    }
+
+    static class Node {
+        long id;
+        double lat;
+        double lon;
+        Map<String, String> extraInfo;
+
+        public Node(long id, double lat, double lon) {
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+            extraInfo = new HashMap<>();
+        }
+
+        public Node(String id, String lat, String lon) {
+            this.id = Long.valueOf(id);
+            this.lat = Double.valueOf(lat);
+            this.lon = Double.valueOf(lon);
+            extraInfo = new HashMap<>();
+        }
+    }
+
+    static class Edge {
+        long id;
+        long from;
+        long to;
+        Map<String, String> extraInfo;
+        boolean isValid = false;
+
+        public Edge(long id, long from, long to, Map<String, String> extraInfo) {
+            this.id = id;
+            this.from = from;
+            this.to = to;
+            this.extraInfo = extraInfo;
+        }
+
+        public Edge(String id) {
+            this.id = Long.valueOf(id);
+            extraInfo = new HashMap<>();
+        }
+
+    }
+
+    public void addEdge(Edge edge) {
+        if (adj.get(edge.from) == null) {
+            adj.put(edge.from, new LinkedList<>());
+        }
+        if (adj.get(edge.to) == null) {
+            adj.put(edge.to, new LinkedList<>());
+        }
+        adj.get(edge.from).add(edge);
+    }
+
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
      * @param dbPath Path to the XML file to be parsed.
      */
     public GraphDB(String dbPath) {
+        nodeMap = new HashMap<>();
+        adj = new HashMap<>();
         try {
             File inputFile = new File(dbPath);
             FileInputStream inputStream = new FileInputStream(inputFile);
@@ -57,7 +122,17 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+        Iterator<Long> iterator = nodeMap.keySet().iterator();
+        List<Long> deleteList = new LinkedList<>();
+        while (iterator.hasNext()) {
+            long key = iterator.next();
+            if (adj.get(key) == null) {
+                deleteList.add(key);
+            }
+        }
+        for (long key : deleteList) {
+            nodeMap.remove(key);
+        }
     }
 
     /**
@@ -65,8 +140,7 @@ public class GraphDB {
      * @return An iterable of id's of all vertices in the graph.
      */
     Iterable<Long> vertices() {
-        //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return nodeMap.keySet();
     }
 
     /**
@@ -75,7 +149,12 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        Set<Long> set = new HashSet<>();
+        List<Edge> list = adj.get(v);
+        for (Edge e : list) {
+            set.add(e.to);
+        }
+        return set;
     }
 
     /**
@@ -136,7 +215,18 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        double min = Double.MAX_VALUE;
+        long destination = 0;
+        for (long key : nodeMap.keySet()) {
+            double dlon = lon(key);
+            double dlat = lat(key);
+            double dis = distance(lon, lat, dlon, dlat);
+            if (min > dis) {
+                min = dis;
+                destination = key;
+            }
+        }
+        return destination;
     }
 
     /**
@@ -145,7 +235,10 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        if (nodeMap.get(v) == null) {
+            System.out.println(nodeMap.get(v));
+        }
+        return nodeMap.get(v).lon;
     }
 
     /**
@@ -154,6 +247,9 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        if (nodeMap.get(v) == null) {
+            System.out.println(nodeMap.get(v));
+        }
+        return nodeMap.get(v).lat;
     }
 }

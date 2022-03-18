@@ -117,6 +117,7 @@ public class CSCourseDB {
      */
     public static void main(String[] args) {
         CSCourseDB db = new CSCourseDB("berkeley-cs.xml");
+
         System.out.println(db);
     }
 }
