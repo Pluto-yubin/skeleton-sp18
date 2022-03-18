@@ -3,10 +3,16 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.HashSet;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -38,14 +44,14 @@ public class GraphDB {
         double lon;
         Map<String, String> extraInfo;
 
-        public Node(long id, double lat, double lon) {
+        Node(long id, double lat, double lon) {
             this.id = id;
             this.lat = lat;
             this.lon = lon;
             extraInfo = new HashMap<>();
         }
 
-        public Node(String id, String lat, String lon) {
+        Node(String id, String lat, String lon) {
             this.id = Long.valueOf(id);
             this.lat = Double.valueOf(lat);
             this.lon = Double.valueOf(lon);
@@ -60,14 +66,14 @@ public class GraphDB {
         Map<String, String> extraInfo;
         boolean isValid = false;
 
-        public Edge(long id, long from, long to, Map<String, String> extraInfo) {
+        Edge(long id, long from, long to, Map<String, String> extraInfo) {
             this.id = id;
             this.from = from;
             this.to = to;
             this.extraInfo = extraInfo;
         }
 
-        public Edge(String id) {
+        Edge(String id) {
             this.id = Long.valueOf(id);
             extraInfo = new HashMap<>();
         }
