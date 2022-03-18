@@ -24,21 +24,21 @@ public class RadixSort {
             maxLen = Math.max(maxLen, asciis[i].length());
         }
         for (int i = 0; i < maxLen; i++) {
-            int[] count = new int[256];
+            int[] count = new int[256 + 1];
             for (int j = 0; j < asciis.length; j++) {
                 String s = asciis[j];
-                int pos = s.length() <= i ? 0 : s.charAt(i);
+                int pos = s.length() <= i ? 0 : s.charAt(i) + 1;
                 count[pos] += 1;
             }
 
-            int[] starter = new int[256];
+            int[] starter = new int[256 + 1];
             int pos = 0;
             for (int j = 0; j < starter.length; j++) {
                 starter[j] = pos;
                 pos += count[j];
             }
             for (String s : Arrays.copyOf(sorted, sorted.length)) {
-                int index = s.length() <= i ? 0 : s.charAt(i);
+                int index = s.length() <= i ? 0 : s.charAt(i) + 1;
                 int place = starter[index];
                 sorted[place] = s;
                 starter[index] += 1;

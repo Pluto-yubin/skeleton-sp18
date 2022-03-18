@@ -75,7 +75,9 @@ public class CountingSort {
             }
             max = Math.max(max, Math.abs(item));
         }
-
+        if (max == Integer.MIN_VALUE) {
+            return arr;
+        }
         int[] countPositive = new int[max + 1];
         int[] countNegative = new int[max + 1];
         for (int item : arr) {
