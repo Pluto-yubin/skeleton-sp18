@@ -21,8 +21,8 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
-    private Map<Long, Node> nodeMap;
-    private Map<Long, List<Edge>> adj;
+    Map<Long, Node> nodeMap;
+    Map<Long, List<Edge>> adj;
 
     /**
      * add node to the graph
