@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,9 +22,68 @@ public class Router {
      * @param destlat The latitude of the destination location.
      * @return A list of node id's in the order visited on the shortest path.
      */
+    private static Queue<Long> queue;
+    private static List<Long> marked;
+    private static Map<Long, Long> edgeTo;
+    private static Map<Long, Double> disTo;
+    private static GraphDB gDB;
+    private static long target;
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        gDB = g;
+        long s = g.closest(stlon, stlat);
+        target = g.closest(destlon, destlat);
+        marked = new ArrayList<>();
+        edgeTo = new HashMap<>();
+        disTo = new HashMap<>();
+        for (long node : g.vertices()) {
+            disTo.put(node, Double.MAX_VALUE);
+        }
+//        queue = new PriorityQueue<>((o1, o2) -> (int) (disTo.get(o1) - disTo.get(o2) + h(o1) - h(o2)));
+        queue = new PriorityQueue<>((o1, o2) -> (int) (disTo.get(o1) - disTo.get(o2)));
+        queue.add(s);
+        disTo.put(s, .0);
+        while (!queue.isEmpty()) {
+            long node = queue.poll();
+            marked.add(node);
+//            if (node == target) {
+//                break;
+//            }
+            for (long w : g.adjacent(node)) {
+                relax(node, w);
+            }
+        }
+        System.out.println(disTo.get(target));
+        return generatePath(s);
+    }
+
+    private static List<Long> generatePath(long src) {
+        List<Long> path = new LinkedList<>();
+        long node = target;
+        path.add(target);
+        while (node != src) {
+            node = edgeTo.get(node);
+            path.add(0, node);
+        }
+        return path;
+    }
+
+    private static double h(long w) {
+        return gDB.distance(w, target);
+    }
+
+    private static void relax(long v, long w) {
+        if (marked.contains(w)) {
+            return;
+        }
+
+        double newDis = disTo.get(v) + gDB.distance(v, w);
+        if (disTo.get(w) > newDis) {
+            disTo.put(w, newDis);
+            System.out.println("New road from: " + v + " to: " + w + " with dis: " + newDis);
+            edgeTo.put(w, v);
+            queue.add(w);
+        }
     }
 
     /**
@@ -37,7 +95,8 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> list = new LinkedList<>();
+        return list;
     }
 
 

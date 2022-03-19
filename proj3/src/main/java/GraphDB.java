@@ -27,8 +27,8 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
-    Map<Long, Node> nodeMap;
-    Map<Long, List<Edge>> adj;
+    private Map<Long, Node> nodeMap;
+    private Map<Long, List<Edge>> adj;
 
     /**
      * add node to the graph
@@ -43,13 +43,6 @@ public class GraphDB {
         double lat;
         double lon;
         Map<String, String> extraInfo;
-
-        Node(long id, double lat, double lon) {
-            this.id = id;
-            this.lat = lat;
-            this.lon = lon;
-            extraInfo = new HashMap<>();
-        }
 
         Node(String id, String lat, String lon) {
             this.id = Long.valueOf(id);

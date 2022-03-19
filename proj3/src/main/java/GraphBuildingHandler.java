@@ -134,8 +134,9 @@ public class GraphBuildingHandler extends DefaultHandler {
                     g.addEdge(new GraphDB.Edge(id, to, from, extraInfo));
                     lastEdge = new GraphDB.Edge(id, to, to, extraInfo);
                 }
+            } else {
+                curWay = new LinkedList<>();
             }
-            curWay = new LinkedList<>();
         } else if (qName.equals("node")) {
             g.addNode(lastNode);
         }
