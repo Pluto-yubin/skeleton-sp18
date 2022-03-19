@@ -38,6 +38,23 @@ public class GraphDB {
         return trie.matchPre(prefix);
     }
 
+    public List<Map<String, Object>> getLocations(String locationName) {
+        List<Long> locations = new LinkedList<>();
+        List<Map<String, Object>> res = new LinkedList<>();
+        for (long nodes : nodeMap.keySet()) {
+            Node node = nodeMap.get(nodes);
+            if (locationName.equals(node.extraInfo.get("name"))) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("lat", lat(nodes));
+                map.put("lon", lon(nodes));
+                map.put("name", node.extraInfo.get("name"));
+                map.put("id", node.id);
+                res.add(map);
+            }
+        }
+        return res;
+    }
+
     static class Node {
         long id;
         double lat;

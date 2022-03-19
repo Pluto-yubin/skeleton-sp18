@@ -23,7 +23,7 @@ public class Trie {
             next = new Hashtable<>();
         }
 
-        public Node() {
+        Node() {
             next = new Hashtable<>();
         }
     }
@@ -35,9 +35,6 @@ public class Trie {
 
         String s = GraphDB.cleanString(dirtyName);
         nameMap.put(s, dirtyName);
-        if (s.equals("thelt")) {
-            System.out.println(dirtyName + "!!");
-        }
         Node node = root;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
