@@ -76,4 +76,14 @@ public class TestRouter {
         }
         return expected;
     }
+
+    @Test
+    public void testSingle() {
+        List<Long> longs = Router.shortestPath(graph,
+                -122.27577136635146, 122.28084610532912,
+                37.86606724738536, 37.825280658213764);
+        for (long l : longs) {
+            System.out.println(l);
+        }
+    }
 }

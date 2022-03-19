@@ -37,7 +37,7 @@ public class Router {
         edgeTo = new HashMap<>();
         disTo = new HashMap<>();
         for (long node : g.vertices()) {
-            disTo.put(node, Double.MAX_VALUE);
+            disTo.put(node, Double.POSITIVE_INFINITY);
         }
 
         queue = new PriorityQueue<>(Comparator.comparingDouble(o -> disTo.get(o) + h(o)));
@@ -62,6 +62,9 @@ public class Router {
         long node = target;
         path.add(target);
         while (node != src) {
+            if (edgeTo.get(node) == null) {
+                return new LinkedList<>();
+            }
             node = edgeTo.get(node);
             path.add(0, node);
         }
