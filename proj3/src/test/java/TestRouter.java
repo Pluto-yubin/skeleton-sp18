@@ -40,13 +40,6 @@ public class TestRouter {
                     params.get("start_lon"), params.get("start_lat"),
                     params.get("end_lon"), params.get("end_lat"));
             List<Long> expected = expectedResults.get(i);
-            double expectedLen = 0;
-            for (int j = 0; j < expected.size() - 1; j++) {
-                long n1 = expected.get(j);
-                long n2 = expected.get(j+1);
-                expectedLen += graph.distance(n1, n2);
-            }
-            System.out.println("expected dis: " + expectedLen);
             assertEquals("Your results did not match the expected results", expected, actual);
         }
     }

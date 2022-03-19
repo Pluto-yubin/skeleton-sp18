@@ -39,21 +39,21 @@ public class Router {
         for (long node : g.vertices()) {
             disTo.put(node, Double.MAX_VALUE);
         }
-//        queue = new PriorityQueue<>((o1, o2) -> (int) (disTo.get(o1) - disTo.get(o2) + h(o1) - h(o2)));
-        queue = new PriorityQueue<>((o1, o2) -> (int) (disTo.get(o1) - disTo.get(o2)));
+
+        queue = new PriorityQueue<>(Comparator.comparingDouble(o -> disTo.get(o) + h(o)));
         queue.add(s);
         disTo.put(s, .0);
+
         while (!queue.isEmpty()) {
             long node = queue.poll();
+            if (node == target) {
+                break;
+            }
             marked.add(node);
-//            if (node == target) {
-//                break;
-//            }
             for (long w : g.adjacent(node)) {
                 relax(node, w);
             }
         }
-        System.out.println(disTo.get(target));
         return generatePath(s);
     }
 
@@ -78,9 +78,8 @@ public class Router {
         }
 
         double newDis = disTo.get(v) + gDB.distance(v, w);
-        if (disTo.get(w) > newDis) {
+        if (newDis < disTo.get(w)) {
             disTo.put(w, newDis);
-            System.out.println("New road from: " + v + " to: " + w + " with dis: " + newDis);
             edgeTo.put(w, v);
             queue.add(w);
         }
