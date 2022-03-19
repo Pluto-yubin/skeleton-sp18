@@ -23,13 +23,19 @@ public class GraphDB {
 
     private Map<Long, Node> nodeMap;
     private Map<Long, List<Edge>> adj;
-
+    private Trie trie;
     /**
      * add node to the graph
       * @param node
      */
     public void addNode(Node node) {
         nodeMap.put(node.id, node);
+        String name = node.extraInfo.getOrDefault("name", "");
+        trie.put(name);
+    }
+
+    public List<String> getNameByProfix(String prefix) {
+        return trie.matchPre(prefix);
     }
 
     static class Node {
@@ -77,6 +83,16 @@ public class GraphDB {
         adj.get(edge.from).add(edge);
     }
 
+    public String getWayName(long from, long to) {
+        List<Edge> list = adj.get(from);
+        for (Edge edge : list) {
+            if (edge.to == to) {
+                return edge.extraInfo.getOrDefault("name", Router.NavigationDirection.UNKNOWN_ROAD);
+            }
+        }
+        return Router.NavigationDirection.UNKNOWN_ROAD;
+    }
+
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -85,6 +101,7 @@ public class GraphDB {
     public GraphDB(String dbPath) {
         nodeMap = new HashMap<>();
         adj = new HashMap<>();
+        trie = new Trie();
         try {
             File inputFile = new File(dbPath);
             FileInputStream inputStream = new FileInputStream(inputFile);

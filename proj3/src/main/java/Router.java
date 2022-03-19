@@ -95,9 +95,38 @@ public class Router {
      *              corresponds to a node from the graph in the route.
      * @return A list of NavigatiionDirection objects corresponding to the input
      * route.
+     * Between -15 and 15 degrees the direction should be “Continue straight”.
+     * Beyond -15 and 15 degrees but between -30 and 30 degrees the direction should be “Slight left/right”.
+     * Beyond -30 and 30 degrees but between -100 and 100 degrees the direction should be “Turn left/right”.
+     * Beyond -100 and 100 degrees the direction should be “Sharp left/right”.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
         List<NavigationDirection> list = new LinkedList<>();
+        for (int i = 0; i < route.size() - 1; i++) {
+            long from = route.get(i);
+            long to = route.get(i + 1);
+            double bearing = g.bearing(from, to);
+            NavigationDirection direction = new NavigationDirection();
+            direction.distance = g.distance(from, to);
+            String name = g.getWayName(from, to);
+            direction.way = name;
+            if (Math.abs(bearing) <= 15.0) {
+                direction.direction = NavigationDirection.STRAIGHT;
+            } else if (bearing < -15 && bearing >= -30) {
+                direction.direction = NavigationDirection.SLIGHT_LEFT;
+            } else if (bearing > 15 && bearing <= 30) {
+                direction.direction = NavigationDirection.SLIGHT_RIGHT;
+            } else if (bearing < -30 && bearing >= -100) {
+                direction.direction = NavigationDirection.LEFT;
+            } else if (bearing > 30 && bearing <= 100) {
+                direction.direction = NavigationDirection.RIGHT;
+            } else if (bearing < -100) {
+                direction.direction = NavigationDirection.SHARP_LEFT;
+            } else if (bearing > 100) {
+                direction.direction = NavigationDirection.SLIGHT_RIGHT;
+            }
+            list.add(direction);
+        }
         return list;
     }
 

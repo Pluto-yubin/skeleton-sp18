@@ -68,7 +68,6 @@ public class Rasterer {
         if (!inFields(MapServer.ROOT_LRLON, MapServer.ROOT_ULLON, MapServer.ROOT_ULLAT, MapServer.ROOT_LRLAT, false) || ullon > lrlon || ullat < lrlat) {
             results.put("query_success", false);
         }
-        System.out.println(results);
         return results;
     }
 
