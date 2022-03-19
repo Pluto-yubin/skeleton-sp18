@@ -34,12 +34,11 @@ public class GraphDB {
         trie.put(name);
     }
 
-    public List<String> getNameByProfix(String prefix) {
+    public List<String> getLocationsByPrefix(String prefix) {
         return trie.matchPre(prefix);
     }
 
     public List<Map<String, Object>> getLocations(String locationName) {
-        List<Long> locations = new LinkedList<>();
         List<Map<String, Object>> res = new LinkedList<>();
         for (long nodes : nodeMap.keySet()) {
             Node node = nodeMap.get(nodes);
