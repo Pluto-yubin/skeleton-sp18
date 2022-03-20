@@ -67,9 +67,11 @@ public class Trie {
     }
 
     private void preHelper(String prefix, Node node, List<String> res) {
+        if (node == null) {
+            return;
+        }
         if (node.isKey) {
             res.addAll(node.name);
-            return;
         }
         for (char c : node.next.keySet()) {
             preHelper(prefix + node.c, node.next.get(c), res);
