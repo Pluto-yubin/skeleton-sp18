@@ -55,7 +55,7 @@ public class Trie {
         List<String> res = new LinkedList<>();
         for (int i = 0; i < prefix.length(); i++) {
             node = node.next.get(prefix.charAt(i));
-            if (node == null || node.isKey) {
+            if (node == null) {
                 return res;
             }
         }
