@@ -13,17 +13,19 @@ public class Trie {
     private static class Node {
         char c;
         boolean isKey;
-        String name;
+        List<String> name;
         Hashtable<Character, Node> next;
 
         public Node(char c) {
             this.c = c;
             this.isKey = false;
             next = new Hashtable<>();
+            name = new LinkedList<>();
         }
 
         Node() {
             next = new Hashtable<>();
+            name = new LinkedList<>();
         }
     }
 
@@ -45,7 +47,7 @@ public class Trie {
             }
         }
         node.isKey = true;
-        node.name = dirtyName;
+        node.name.add(dirtyName);
     }
 
     public List<String> matchPre(String prefix) {
@@ -66,7 +68,7 @@ public class Trie {
 
     private void preHelper(String prefix, Node node, List<String> res) {
         if (node.isKey) {
-            res.add(node.name);
+            res.addAll(node.name);
             return;
         }
         for (char c : node.next.keySet()) {

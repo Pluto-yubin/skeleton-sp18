@@ -15,16 +15,12 @@
    <meta charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script>
-        var query_url = "http://localhost:4567/raster";
+        var query_url = "http://localhost:4567/search";
         $.get({
             async: false,
             url: query_url,
-            data: { h: 871.285831485106,
-                    lrlat: 37.833958757243195,
-                    lrlon: -122.27440621767384,
-                    ullat: 37.8877443805533,
-                    ullon: -122.28984120332932,
-                    w: 651.9288996648239
+            data: {
+                term: " "
                    },
             success: function(data) {
                 map.src = "data:image/png;base64," + data.b64_encoded_image_data;
