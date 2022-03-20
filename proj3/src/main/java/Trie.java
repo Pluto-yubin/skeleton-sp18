@@ -59,13 +59,7 @@ public class Trie {
                 return res;
             }
         }
-
-        if (node.isKey) {
-            res.addAll(node.name);
-        }
-        for (char c : node.next.keySet()) {
-            preHelper(prefix, node.next.get(c), res);
-        }
+        preHelper(prefix, node, res);
         return res;
     }
 
