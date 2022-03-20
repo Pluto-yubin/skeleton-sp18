@@ -14,7 +14,7 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     public int width() {
@@ -72,7 +72,11 @@ public class SeamCarver {
                     }
                     continue;
                 } else if (j == 0) {
-                    table[i][j] = Math.min(table[i - 1][j], table[i - 1][j + 1]);
+                    if (y == 1) {
+                        table[i][j] = table[i - 1][j];
+                    } else {
+                        table[i][j] = Math.min(table[i - 1][j], table[i - 1][j + 1]);
+                    }
                 } else if (j == y - 1) {
                     table[i][j] = Math.min(table[i - 1][j], table[i - 1][j - 1]);
                 } else {
@@ -114,6 +118,9 @@ public class SeamCarver {
     // get the col index of min energy value of table[i][j], table[i][j-1] and table[i][j+1]
     private int getMinIndex(double[][] table, int i, int j) {
         if (j == 0) {
+            if (table[i].length == 1) {
+                return j;
+            }
             return table[i][j] < table[i][j + 1] ? j : j + 1;
         } else if (j == table[i].length - 1) {
             return table[i][j] < table[i][j - 1] ? j : j - 1;
