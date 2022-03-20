@@ -60,6 +60,9 @@ public class Trie {
             }
         }
 
+        if (node.isKey) {
+            res.addAll(node.name);
+        }
         for (char c : node.next.keySet()) {
             preHelper(prefix, node.next.get(c), res);
         }
