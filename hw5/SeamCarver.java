@@ -10,7 +10,7 @@ public class SeamCarver {
     private Picture picture;
 
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        this.picture = new Picture(picture);
     }
 
     public Picture picture() {
@@ -116,7 +116,7 @@ public class SeamCarver {
         if (j == 0) {
             return table[i][j] < table[i][j + 1] ? j : j + 1;
         } else if (j == table[i].length - 1) {
-            return table[i][j] < table[j][j - 1] ? j : j - 1;
+            return table[i][j] < table[i][j - 1] ? j : j - 1;
         }
         if (table[i][j] < table[i][j - 1]) {
             return table[i][j] < table[i][j + 1] ? j : j + 1;
