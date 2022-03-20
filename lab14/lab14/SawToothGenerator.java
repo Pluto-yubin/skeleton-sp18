@@ -17,11 +17,10 @@ public class SawToothGenerator implements Generator {
     @Override
     public double next() {
         state = (state + 1);
-//        System.out.println(stateHelper());
         return stateHelper();
     }
 
-    public double stateHelper() {
+    private double stateHelper() {
         return (state % period) * 2 / (double) period - 1;
     }
 }
