@@ -20,7 +20,7 @@ public class StrangeBitwiseGenerator implements Generator {
         return stateHelper(weirdState);
     }
 
-    private double stateHelper(int state) {
-        return (state % period) * 2 / (double) period - 1;
+    private double stateHelper(int states) {
+        return (states % period) * 2 / (double) period - 1;
     }
 }
