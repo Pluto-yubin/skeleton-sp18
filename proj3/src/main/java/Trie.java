@@ -6,8 +6,6 @@ import java.util.*;
  */
 public class Trie {
     private Node root;
-    // key is cleaned name, value is normal name
-    private Map<String, String> nameMap = new HashMap<>();
     public Trie() {
         root = new Node();
     }
@@ -15,11 +13,12 @@ public class Trie {
     private static class Node {
         char c;
         boolean isKey;
+        String name;
         Hashtable<Character, Node> next;
 
-        public Node(char c, boolean isKey) {
+        public Node(char c) {
             this.c = c;
-            this.isKey = isKey;
+            this.isKey = false;
             next = new Hashtable<>();
         }
 
@@ -34,18 +33,19 @@ public class Trie {
         }
 
         String s = GraphDB.cleanString(dirtyName);
-        nameMap.put(s, dirtyName);
         Node node = root;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if (node.next.containsKey(c)) {
                 node = node.next.get(c);
             } else {
-                Node newNode = new Node(c, i == s.length() - 1);
+                Node newNode = new Node(c);
                 node.next.put(c, newNode);
                 node = node.next.get(c);
             }
         }
+        node.isKey = true;
+        node.name = dirtyName;
     }
 
     public List<String> matchPre(String prefix) {
@@ -66,8 +66,7 @@ public class Trie {
 
     private void preHelper(String prefix, Node node, List<String> res) {
         if (node.isKey) {
-            System.out.println(prefix + node.c + " : " + nameMap.get(prefix + node.c));
-            res.add(nameMap.get(prefix + node.c));
+            res.add(node.name);
             return;
         }
         for (char c : node.next.keySet()) {
