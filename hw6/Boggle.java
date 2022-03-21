@@ -62,7 +62,7 @@ public class Boggle {
     }
 
     private static void findPath(String s, int i, int j) {
-        if (blockList.contains(s)) {
+        if (marked[i][j]) {
             return;
         }
         marked[i][j] = true;
@@ -128,7 +128,7 @@ public class Boggle {
     }
 
     public static void main(String[] args) {
-        List<String> solve = Boggle.solve(7, "exampleBoard.txt");
+        List<String> solve = Boggle.solve(7, "smallBoard.txt");
         System.out.println(solve);
     }
 }
