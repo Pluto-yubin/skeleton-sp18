@@ -15,6 +15,7 @@ public class Boggle {
     private static List<String> blockList = new ArrayList<>();
     private static List<String> validList = new LinkedList<>();
     private static int size;
+    static int count = 0;
     private static class Node {
         char c;
         int x;
@@ -62,9 +63,10 @@ public class Boggle {
     }
 
     private static void findPath(String s, int i, int j) {
-        if (marked[i][j]) {
-            return;
-        }
+//        if (marked[i][j]) {
+//            return;
+//        }
+        count += 1;
         marked[i][j] = true;
         switch (trie.contains(s)) {
             case Trie.BREAK:
@@ -128,7 +130,11 @@ public class Boggle {
     }
 
     public static void main(String[] args) {
+        Stopwatch timer = new Stopwatch();
         List<String> solve = Boggle.solve(7, "smallBoard.txt");
         System.out.println(solve);
+        System.out.println(count);
+        double time2 = timer.elapsedTime();
+        StdOut.printf("%.2f seconds\n", time2);
     }
 }
